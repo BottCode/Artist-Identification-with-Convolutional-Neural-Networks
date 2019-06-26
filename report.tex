@@ -48,25 +48,29 @@ Università di Padova \\
 \maketitle
 
 \begin{abstract}
-	In questo essay presentiamo il lavoro svolto per il progetto di Cognitive Services.
-	Il problema che affrontiamo è quello dell'artist idefication, ossia a partire dall'immagine di un quadro riuscire a riconoscerne  in modo automaticol'autore. Per risolvere questo task abbiamo sfruttato (exploit) diverse CNNs fornite da pytorch esistenti allenandole from scratch e con tecniche di transfer learning su gcloud. I risultati che abbiamo ottenuto sono in linea con quelli dello stato dell'arte (citazioni ai papers), confermando che le cnns sono adatte per questo tipo di task.
+	In this essay we present our work for the project of the Cognitive Services course.
+	The problem we face is the artist identification task, that is given the image of a painting, being able to recognize its author.\\
+	In order to resolve this task, we have exploit some differents Convolutional Neural Networks (CNNs) that comes with \textit{Pytorch} library. Such networks have been trained in according to two distinct approaches: \textit{1.} training them from scratch or  \textit{2.} exploit pre-trained models using transfer learning technique. We used the \textit{Google Cloud Plataform} to train and evaluate our models.\\
+	What we have achieved is a set of results which are in line with  state-of-the-art (\cite{ArtistIdCNN406}) ..., confirming that CNNs are suitable to solve this type of task.
 \end{abstract}
 
 
 % keywords can be removed
-\keywords{Neural Network \and Artist Identification \and CNN \and ResNeXt \and GoogLeNet \and AlexNet \and Transfer Learning}
+\keywords{Convolutional Neural Networks \and Artist Identification \and CNNs \and ResNeXt \and GoogLeNet \and AlexNet \and Transfer Learning}
 
 
 \section{Introduction}
-Artist identification è il task di riconoscere l'artista autore del quadro solo in base ad una immagine di quest'ultimo. Si tratta oggigiorno di un problema difficile per i motivi che seguono:1. pochi contributi che tra l'altro utilizzano tecnologie che sono lo stato dell'arte (CNNs) 2. i dataset disponibili, e quello usato è un sottoinsieme di Wikiart (cit al link github), non sono ampi come quelli di altri task più mainstream (face recognition, object recognition) 3. lo stile di un artista può cambiare molto di quadro in quadro 4. Alcuni artisti nella storia si sono influenzati, avendo così una certa somiglianza fra loro. È importante perchè generalmente è compiuto da esperti umani. Contributi a questi task possono portare ad un riconoscimento automatico di artefatti falsi. 
-Abbiamo usato 3 diverse CNNs, alexnet googlenet resnext, sia allenandole from scratch sia sfruttando tecniche di transfer learning, osservando e confrontando fra loro le prestazioni. Nel migliore dei casi abbiamo ottenuto una accuracy dell'82\% ... ecc.
-L'essay è così strutturato: In section 2 parliamo dell'approccio in lavori precedenti paragonandoli con i metodi utilizzati e i risultati ottenuti da noi. In section 3 spieghiamo quale dataset utilizziamo, come è stato formato, le tecniche di preprocessing e data augmentation utilizzate .
-In section 4  esponiamo l'architettura delle reti utilizzate e come esse sono state allenate.
-In section 5 mostriamo la configurazione della  VM su gcloud compute engine, i dettagli implementativi e le metriche utilizzate per valutare la bontà dei vari modelli e la qualità ottenuta.
-Infine nella section 6 traiamo qualche conclusione e esponiamo alcuni possibili future works sui risultati da noi ottenuti.
+Artist identification is a task regarding recognition of the painter who depicted a certain painting, given an image of it.\\
+It's still nowadays a difficult problem to solve for the following reasons: \textit{1.} there are not many contributions yet and these rely on the latest models of deep learning (e.g. CNNs). \textit{2.} The available datasets are not as large as those used by models that solve more common tasks such as object detection or face recognition. \textit{3.} An artist's style can change a lot through his works, or it could be influenced by other painters. \\For example, it is well known that Paul Cézanne and Camille Pissarro, who have spent a period of their lives in close contact, have produced some works of similar style.\\
+This type of task is still done by art experts and contributions to this type of problem can help and lead to \textit{1.} the development of automatic fake artifact detection and \textit{2.} automatic cataloguing of artworks.\\
+
+We used three different CNNs: AlexNet (2012), GoogLeNet (2014) and ResNeXt (2016). For each of them, we have established two different ways of training: from scratch and with transfer learning  upon pre-trained version of such CNNs. Then we have observed and compared their performance. From our experiment we have obtained ... RISULTATI 82\% accuracy.\\
+
+The rest of the essay is structured as follows: In section 2 we discuss (\textbf{METTI I REF}) similarities and differences between previous works and ours. In section 3 we explain which dataset we have used, how it was formed and which preprocessing and data augmentation techniques we have exploited. In section 4 we exhibit the CNNs' architectures and how we have trained them. In section 5 we show some details regarding the \textit{GCloud Compute Engine}'s configuration, the metrics used to assess the goodness of the models and the detailed results of this experiment. Finally, in section 6 we draw some conclusion and we outline some possibile future works which rely on our result.
+
+
 \section{Related Works}
 
-See Section \cite{ArtistIdCNN}
 
 \section{Dataset}
 
@@ -105,7 +109,7 @@ Inoltre, per questo specifico task, ogni punto del quadro ha contenuto informati
 %%% Comment out this section when you \bibliography{references} is enabled.
 \begin{thebibliography}{1}
 	
-	\bibitem{ArtistIdCNN}
+	\bibitem{ArtistIdCNN406}
 	Nitin Viswanathan.
 	\newblock Artist Identification with Convolutional Neural Networks. \newblock 2017
 	
