@@ -13,7 +13,7 @@
 \usepackage{microtype}      % microtypography
 \usepackage{lipsum}
 
-\title{Painter Recognition: a comparison between AlexNet, GoogLeNet and ResNeXt}
+\title{Artist Identification	\\  a comparison between AlexNet, GoogLeNet and ResNeXt}
 
 
 \author{
@@ -48,30 +48,37 @@ Università di Padova \\
 \maketitle
 
 \begin{abstract}
-\lipsum[1]
+	In questo essay presentiamo il lavoro svolto per il progetto di Cognitive Services.
+	Il problema che affrontiamo è quello dell'artist idefication, ossia a partire dall'immagine di un quadro riuscire a riconoscerne  in modo automaticol'autore. Per risolvere questo task abbiamo sfruttato (exploit) diverse CNNs fornite da pytorch esistenti allenandole from scratch e con tecniche di transfer learning su gcloud. I risultati che abbiamo ottenuto sono in linea con quelli dello stato dell'arte (citazioni ai papers), confermando che le cnns sono adatte per questo tipo di task.
 \end{abstract}
 
 
 % keywords can be removed
-\keywords{Neural Network \and Painter Recognition \and CNN \and ResNeXt \and GoogLeNet \and AlexNet \and Transfer Learning}
+\keywords{Neural Network \and Artist Identification \and CNN \and ResNeXt \and GoogLeNet \and AlexNet \and Transfer Learning}
 
 
 \section{Introduction}
-\lipsum[2]
-\lipsum[3]
-
-
+Artist identification è il task di riconoscere l'artista autore del quadro solo in base ad una immagine di quest'ultimo. Si tratta oggigiorno di un problema difficile per i motivi che seguono:1. pochi contributi che tra l'altro utilizzano tecnologie che sono lo stato dell'arte (CNNs) 2. i dataset disponibili, e quello usato è un sottoinsieme di Wikiart (cit al link github), non sono ampi come quelli di altri task più mainstream (face recognition, object recognition) 3. lo stile di un artista può cambiare molto di quadro in quadro 4. Alcuni artisti nella storia si sono influenzati, avendo così una certa somiglianza fra loro. È importante perchè generalmente è compiuto da esperti umani. Contributi a questi task possono portare ad un riconoscimento automatico di artefatti falsi. 
+Abbiamo usato 3 diverse CNNs, alexnet googlenet resnext, sia allenandole from scratch sia sfruttando tecniche di transfer learning, osservando e confrontando fra loro le prestazioni. Nel migliore dei casi abbiamo ottenuto una accuracy dell'82\% ... ecc.
+L'essay è così strutturato: In section 2 parliamo dell'approccio in lavori precedenti paragonandoli con i metodi utilizzati e i risultati ottenuti da noi. In section 3 spieghiamo quale dataset utilizziamo, come è stato formato, le tecniche di preprocessing e data augmentation utilizzate .
+In section 4  esponiamo l'architettura delle reti utilizzate e come esse sono state allenate.
+In section 5 mostriamo la configurazione della  VM su gcloud compute engine, i dettagli implementativi e le metriche utilizzate per valutare la bontà dei vari modelli e la qualità ottenuta.
+Infine nella section 6 traiamo qualche conclusione e esponiamo alcuni possibili future works sui risultati da noi ottenuti.
 \section{Related Works}
 
-\lipsum[4] See Section \cite{ArtistIdCNN}
+See Section \cite{ArtistIdCNN}
 
 \section{Dataset}
 
-\paragraph{Overview}
-
-\paragraph{Preprocessing}
-
-\paragraph{Data augmentation}
+\paragraph{Overview}\mbox{}\\
+La prima cosa necessaria per allenare una cnn per questi task è un grande dataset di quadri di differenti artisti. Il dataset da noi utilizzato è preso da \cite{ArtGANDataset} che non è altro che un sottoinsieme del dataset Wikiart (cit link a wikiart). Si tratta di un dataset contenete circa 19k immagini di 23 artisti differenti , provenienti da epoche diverse fra loro, i quali hanno stili diversi fra loro, ma influenzati fra loro. Le immagini differiscono in dimensioni e forma.  Ci sono dei file .csv che contengono le label di ogni quadro suddividendo i quadri per  autore .Per avere un dataset bilanciato, abbiamo, per ogni artista, selezionato randomly 450 quadri.
+L'organizzazione di \cite{ArtGANDataset} non presentava un test-set. Abbiamo quindi suddiviso i quadri in subset di train, validation e test con uno split 80-10-10, ottenengo quindi 360 quadri per il training, 45 per test e 45 per validation per ogni artista. In totale il numero complessivo di quadri è 10350.
+Inoltre \cite{ArtGANDataset} presentava alcuni quadri in più subset, cosa da noi evitata in quanto ciò non porterebbe ad una corretta valutazione delle performance.
+\paragraph{Preprocessing and Data augmentation}\mbox{}\\
+Per dare in input le immagini alle cnn è necessario che esse abbiano una certa forma e dimensione. Per ogni immagine prendiamo un crop di 224x224 e zero-centered (sottrarre la media) e normalization e utilizzando media e deviazioni standard per ogni channel (trattandosi di immagini RGB) red, green e blue. \\
+Scrivere a cosa serve la data aug. Abbiamo utilizzato delle tecniche di data augmentation quali: per ogni immagine, prima di darla in input alla rete nella fase di training, abbiamo preso un crop 224x224 in una posizione casuale dell'immagine e flippato orizzontalmente con una prob del 50\%. Queste tecniche sono usate in task di visual recognition per aumentare il dataset e ridurre la possibilità di incorrere in overfitting.
+Inoltre, per questo specifico task, ogni punto del quadro ha contenuto informativo sullo stile dell'autore.
+\textbf{STUDIARSI COSA VUOL DIRE FARE NORMALIZATION (ZERO CENTER) E PERCHÈ È UTILE}.
 
 \section{Method}
 
@@ -88,6 +95,8 @@ Università di Padova \\
 
 \paragraph{Evaluation Metrics}
 
+\paragraph{Results}
+
 
 
 
@@ -99,6 +108,10 @@ Università di Padova \\
 	\bibitem{ArtistIdCNN}
 	Nitin Viswanathan.
 	\newblock Artist Identification with Convolutional Neural Networks. \newblock 2017
+	
+	\bibitem{ArtGANDataset}
+	Un qualche nome... \newblock
+	\url{https://github.com/cs-chan/ArtGAN/tree/master/WikiArt Dataset}
 	
 \end{thebibliography}
 
