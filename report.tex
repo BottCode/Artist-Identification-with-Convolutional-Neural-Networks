@@ -71,6 +71,35 @@ The rest of the essay is structured as follows: In section 2 we discuss (\textbf
 
 \section{Related Works}
 
+\paragraph{Art Painting Identification using Convolutional Neural Network (2017)}
+\url{https://www.ripublication.com/ijaer17/ijaerv12n4_17.pdf}\\
+CNN for art painting identification.\\ Hanno applicato diversi tipi di distorsione perchè volevano simulare il riconoscimento di opere i TV, film o simili. Pensa a questa cosa in ottica di protezione del copyright. Questo ha portato alla data augmentation. "sliding window scheme [2-4] to extract the region of interest".
+\textbf{Architettura rete}: Nel training trasforma le immagini in 256x256 grayscale e poi scala i pixel value in -1,+1.  Inizializza i pesi a caso secondo una gaussiana "The ReLU nonlinearity is applied to the output of every convolutional and
+fully-connected layer; Spatial pooling is carried out by maxpooling layers; Adam Optimizer is used to minimize the loss." Tre tipi di architettura sfruttando tali moduli. La prima ispirata ad AlexNet, la seconda a VGG e la terza una versione ridotta della seconda. Loro quindi creano architetture, noi no.
+Mostrano le differenze di prestazione sulla terza architettura al variare dell'inizializzazione dei pesi/bias e dell'optimezir/learning rate (table 2 e 3). Questo paper sembra avere un approccio sperimentale migliore del nostro. Dovremmo prenderne spunto.
+
+\paragraph{Large-scale Classification of Fine-Art Paintings:
+	Learning The Right Metric on The Right Feature (2015)}
+\url{https://arxiv.org/pdf/1505.00855.pdf}\\
+Vanno a riconoscere stile, genere e artista di un quadro. Elencano una serie di features oggetto di analisi: "space, texture, form, shape, color, tone and line are used. Other principles include movement, unity, harmony, variety, balance, contrast, proportion, and pattern. To
+this might be added physical attributes, like brush strokes as well as subject matter and
+other descriptive concepts For the task of computer analyses of art, researchers have engineered and investigated various visual features3
+that encode some of these artistic concepts, in particular
+brush strokes and color, which are encoded as low-level features such as texture statistics and color histograms (e.g. [19, 20]). Color and texture are highly prone to variations during the digitization of paintings; color is also affected by a painting’s age". Sostengono però che ingegnerizzare tutte queste features porterebbe ad un processo confusionario.  Le cnn permettono il "learning" delle features dai dati invece di pre-elaborare le features prima menzionate.\\ Loro comunque seguono una terza strategia: vanno a studiare lo stato dell'arte per vari elementi visivi. Poi usano metric learning  per vari tipi di previsioni: stile, genere e artista. Questo lo fanno in ottica di un sistema di raccomandazione. Tre metodologie: metric learning, feature fusion, metric-fusion.
+
+\paragraph{The Rijksmuseum Challenge:
+	Museum-Centered Visual Recognition (2014)}
+\url{https://staff.fnwi.uva.nl/t.e.j.mensink/publications/mensink14icmr.pdf} bah.. di interessante hanno che stimano l'anno di creazione.
+
+\paragraph{Recognizing Image Style (2014)}
+\url{https://arxiv.org/pdf/1311.3715.pdf} \\
+Qui operano su foto reali e quadri per predirne lo stile. "Distinct visual styles are apparent in art, cinematography, advertising, and have become extremely popular in amateur photography, with apps like Instagram leading the way". Sottolineano che "the distinctions between, say, Rococo versus pre-Rafaelite style are less relevant to modern photography and design." e anche che tali stili non sono in mutua esclusione. "This leads to one
+conclusion of our work: mid-level features derived from object datasets are generic for style
+recognition, and superior to hand-tuned features."
+
+\paragraph{Classification of Artistic Styles using Binarized
+	Features Derived from a Deep Neural Network ($\geq$ 2014)}\url{http://courses.cs.tau.ac.il/~wolf/papers/genrestyle.pdf}\\
+
 
 \section{Dataset}
 
