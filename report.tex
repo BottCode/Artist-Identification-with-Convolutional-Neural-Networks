@@ -49,9 +49,9 @@ Università di Padova \\
 
 \begin{abstract}
 	In this essay we present our work for the project of the Cognitive Services course.
-	The problem we face is the artist identification task, that is given the image of a painting, being able to recognize its author.\\
-	In order to resolve this task, we have exploit some differents Convolutional Neural Networks (CNNs) that comes with \textit{Pytorch} library. Such networks have been trained in according to two distinct approaches: \textit{1.} training them from scratch or  \textit{2.} exploit pre-trained models using transfer learning technique. We used the \textit{Google Cloud Plataform} to train and evaluate our models.\\
-	What we have achieved is a set of results which are in line with  state-of-the-art (\cite{ArtistIdCNN406}) ..., confirming that CNNs are suitable to solve this type of task.
+	The problem we face is the artist identification task, that is being able to recognize the author of a painting, given an image of it.\\
+	In order to resolve this task, we have exploited some differents Convolutional Neural Networks (CNNs) that come with \textit{Pytorch} library. Such networks have been trained in according to two distinct approaches: training them from scratch or exploiting pre-trained models using transfer learning technique. We used the \textit{Google Cloud Plataform} to train and evaluate our models.\\
+	What we have achieved is a set of results which are in line with the  state-of-the-art, confirming that CNNs are suitable to solve this type of task.
 \end{abstract}
 
 
@@ -61,18 +61,23 @@ Università di Padova \\
 
 \section{Introduction}
 Artist identification is a task regarding recognition of the painter who depicted a certain painting, given an image of it.\\
-It's still nowadays a difficult problem to solve for the following reasons: \textit{1.} there are not many contributions yet and these rely on the latest models of deep learning (e.g. CNNs). \textit{2.} The available datasets are not as large as those used by models that solve more common tasks such as object detection or face recognition. \textit{3.} An artist's style can change a lot through his works, or it could be influenced by other painters. \\For example, it is well known that Paul Cézanne and Camille Pissarro, who have spent a period of their lives in close contact, have produced some works of similar style.\\
-This type of task is still done by art experts and contributions to this type of problem can help and lead to \textit{1.} the development of automatic fake artifact detection and \textit{2.} automatic cataloguing of artworks.\\
+It's still nowadays a difficult problem to solve for the following reasons:
+\begin{itemize}
+	\item there are not many contributions yet and these rely on the latest models of deep learning (e.g. CNNs). 
+	\item The available datasets are not as large as those used by models which solve more common tasks such as object detection or face recognition.
+	\item An artist's style can change a lot through his works, or it could be influenced by other painters. For example, it is well known that Paul Cézanne and Camille Pissarro, who have spent a period of their lives together, have produced some works of similar style.
+\end{itemize}
+This type of task is still done by art experts and contributions to this type of problem can help and lead to the development of automatic fake artifact detection and automatic cataloguing of artworks.\\
 
-We used three different CNNs: AlexNet (2012), GoogLeNet (2014) and ResNeXt (2016). For each of them, we have established two different ways of training: from scratch and with transfer learning  upon pre-trained version of such CNNs. Then we have observed and compared their performance. From our experiment we have obtained ... RISULTATI 82\% accuracy.\\
+We used three different CNNs: AlexNet (2012), GoogLeNet (2014) and ResNeXt (2016). For each of them, we have established two different ways of training: from scratch and with transfer learning  upon pre-trained version of such CNNs. Then we have observed and compared their performance. From our experiment we have obtained 83.768\% accuracy.\\
 
-The rest of the essay is structured as follows: In section 2 we discuss (\textbf{METTI I REF}) similarities and differences between previous works and ours. In section 3 we explain which dataset we have used, how it was formed and which preprocessing and data augmentation techniques we have exploited. In section 4 we exhibit the CNNs' architectures and how we have trained them. In section 5 we show some details regarding the \textit{GCloud Compute Engine}'s configuration, the metrics used to assess the goodness of the models and the detailed results of this experiment. Finally, in section 6 we draw some conclusion and we outline some possibile future works which rely on our result.
-
-
-\section{Related Works}
+The rest of the essay is structured as follows: In section \ref{relwor} we discuss  similarities and differences between previous works and ours. In section \ref{dataset} we explain which dataset we have used, how it was formed and which preprocessing and data augmentation techniques we have exploited. In section\ref{method} we exhibit the CNNs' architectures and how we have trained them. In section \ref{experiments} we show some details regarding the \textit{GCloud Compute Engine}'s configuration, the metrics used to assess the goodness of the models and the detailed results of this experiment. Finally, in section \ref{conclusions} we draw some conclusion and we outline some possibile future works which rely on our result.
 
 
-\section{Dataset}
+\section{Related Works}\label{relwor}
+
+
+\section{Dataset}\label{dataset}
 
 \paragraph{Overview}\mbox{}\\
 La prima cosa necessaria per allenare una cnn per questi task è un grande dataset di quadri di differenti artisti. Il dataset da noi utilizzato è preso da \cite{ArtGANDataset} che non è altro che un sottoinsieme del dataset Wikiart (cit link a wikiart). Si tratta di un dataset contenete circa 19k immagini di 23 artisti differenti , provenienti da epoche diverse fra loro, i quali hanno stili diversi fra loro, ma influenzati fra loro. Le immagini differiscono in dimensioni e forma.  Ci sono dei file .csv che contengono le label di ogni quadro suddividendo i quadri per  autore .Per avere un dataset bilanciato, abbiamo, per ogni artista, selezionato randomly 450 quadri.
@@ -84,14 +89,14 @@ Scrivere a cosa serve la data aug. Abbiamo utilizzato delle tecniche di data aug
 Inoltre, per questo specifico task, ogni punto del quadro ha contenuto informativo sullo stile dell'autore.
 \textbf{STUDIARSI COSA VUOL DIRE FARE NORMALIZATION (ZERO CENTER) E PERCHÈ È UTILE}.
 
-\section{Method}
+\section{Method}\label{method}
 
 \paragraph{CNNs from scratch}
 
 \paragraph{CNNs with Transfer Learning}
 
 
-\section{Experiments}
+\section{Experiments}\label{experiments}
 
 \paragraph{Setup}
 
@@ -104,7 +109,7 @@ Inoltre, per questo specifico task, ogni punto del quadro ha contenuto informati
 
 
 
-\section{Conclusion}
+\section{Conclusions}\label{conclusions}
 
 %%% Comment out this section when you \bibliography{references} is enabled.
 \begin{thebibliography}{1}
