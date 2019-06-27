@@ -73,15 +73,23 @@ The rest of the essay is structured as follows: In section 2 we discuss (\textbf
 
 
 \section{Dataset}
-
 \paragraph{Overview}\mbox{}\\
-La prima cosa necessaria per allenare una cnn per questi task è un grande dataset di quadri di differenti artisti. Il dataset da noi utilizzato è preso da \cite{ArtGANDataset} che non è altro che un sottoinsieme del dataset Wikiart (cit link a wikiart). Si tratta di un dataset contenete circa 19k immagini di 23 artisti differenti , provenienti da epoche diverse fra loro, i quali hanno stili diversi fra loro, ma influenzati fra loro. Le immagini differiscono in dimensioni e forma.  Ci sono dei file .csv che contengono le label di ogni quadro suddividendo i quadri per  autore .Per avere un dataset bilanciato, abbiamo, per ogni artista, selezionato randomly 450 quadri.
-L'organizzazione di \cite{ArtGANDataset} non presentava un test-set. Abbiamo quindi suddiviso i quadri in subset di train, validation e test con uno split 80-10-10, ottenengo quindi 360 quadri per il training, 45 per test e 45 per validation per ogni artista. In totale il numero complessivo di quadri è 10350.
-Inoltre \cite{ArtGANDataset} presentava alcuni quadri in più subset, cosa da noi evitata in quanto ciò non porterebbe ad una corretta valutazione delle performance.
+The first requirement to train a CNN for artist identification is a dataset, of paintings of different artist, as large as possible. For our project we obtain a dataset from \cite{ArtGANDataset}, which is a subset of the WikiArt Dataset. \\
+The dataset contain about 19,000 images of 23 different artists, regarding very different styles, genres  and epochs. There are also three .csv files that labeled all the paintings for genre, style, and artist: for our work we have used only the last one.\\ \\
+In order to obtain a balanced dataset, we decided to select randomly 450 paintings for each artist, so in the end our dataset consists of 10,350 total images. \\
+The next step was to divied the entire dataset in training, validation and test set. \cite{ArtGANDataset} suggests a possibile partition, but we decided to create our own because there isn't a test set in their repository, and some paintings included in the training set are also in the validation set, 
+fact that can create a distorted evaluation of our model during training. Therefore, we split the dataset in training, validation and test sets using a 80-10-10 division per artist, obtaining a training set of 360 paintings per artist, and a validation and test sets each of 45 paintings per artist.
+
 \paragraph{Preprocessing and Data augmentation}\mbox{}\\
-Per dare in input le immagini alle cnn è necessario che esse abbiano una certa forma e dimensione. Per ogni immagine prendiamo un crop di 224x224 e zero-centered (sottrarre la media) e normalization e utilizzando media e deviazioni standard per ogni channel (trattandosi di immagini RGB) red, green e blue. \\
-Scrivere a cosa serve la data aug. Abbiamo utilizzato delle tecniche di data augmentation quali: per ogni immagine, prima di darla in input alla rete nella fase di training, abbiamo preso un crop 224x224 in una posizione casuale dell'immagine e flippato orizzontalmente con una prob del 50\%. Queste tecniche sono usate in task di visual recognition per aumentare il dataset e ridurre la possibilità di incorrere in overfitting.
-Inoltre, per questo specifico task, ogni punto del quadro ha contenuto informativo sullo stile dell'autore.
+CNNs require a precise size for the images passed in it, so we had to modify the paintings in the dataset, considering that they vary widely in shape and size.\\
+So, first, we take a 224x224 crop of each input images, next we zero-center and normalize them, with mean and standard deviation calculated for each of the three channels red, green and blue (they are RGB images).  \\
+During training we also randomly horizontally flip the image with a probability of 50\%, and also take a random crop of it (not always the central pixels), for essentialy two reasons:
+\begin{itemize}
+	\item randomness create variety and can avoid overfit;
+	\item we assumed that the style of an artist is present everywhere in the painting, so taking random crops do not influence the performance of our models.
+\end{itemize}
+Instead, for validation and test sets we always have taken a central crop, in order to obtain stable results not depending on crop position.
+
 \textbf{STUDIARSI COSA VUOL DIRE FARE NORMALIZATION (ZERO CENTER) E PERCHÈ È UTILE}.
 
 \section{Method}
