@@ -71,12 +71,14 @@ The rest of the essay is structured as follows: In section 2 we discuss (\textbf
 
 \section{Related Works}
 
+\paragraph{406}
+
 \paragraph{Art Painting Identification using Convolutional Neural Network (2017)}
 \url{https://www.ripublication.com/ijaer17/ijaerv12n4_17.pdf}\\
 CNN for art painting identification.\\ Hanno applicato diversi tipi di distorsione perchè volevano simulare il riconoscimento di opere i TV, film o simili. Pensa a questa cosa in ottica di protezione del copyright. Questo ha portato alla data augmentation. "sliding window scheme [2-4] to extract the region of interest".
 \textbf{Architettura rete}: Nel training trasforma le immagini in 256x256 grayscale e poi scala i pixel value in -1,+1.  Inizializza i pesi a caso secondo una gaussiana "The ReLU nonlinearity is applied to the output of every convolutional and
 fully-connected layer; Spatial pooling is carried out by maxpooling layers; Adam Optimizer is used to minimize the loss." Tre tipi di architettura sfruttando tali moduli. La prima ispirata ad AlexNet, la seconda a VGG e la terza una versione ridotta della seconda. Loro quindi creano architetture, noi no.
-Mostrano le differenze di prestazione sulla terza architettura al variare dell'inizializzazione dei pesi/bias e dell'optimezir/learning rate (table 2 e 3). Questo paper sembra avere un approccio sperimentale migliore del nostro. Dovremmo prenderne spunto.
+Mostrano le differenze di prestazione sulla terza architettura al variare dell'inizializzazione dei pesi/bias e dell'optimezir/learning rate (table 2 e 3). Questo paper sembra avere un approccio sperimentale migliore del nostro. Dovremmo prenderne spunto. Loro non fanno transfer learning, noi sì.
 
 \paragraph{Large-scale Classification of Fine-Art Paintings:
 	Learning The Right Metric on The Right Feature (2015)}
@@ -100,7 +102,10 @@ recognition, and superior to hand-tuned features."
 \paragraph{Classification of Artistic Styles using Binarized
 	Features Derived from a Deep Neural Network ($\geq$ 2014)}\url{http://courses.cs.tau.ac.il/~wolf/papers/genrestyle.pdf}\\
 
+\paragraph{Cosa fare per ogni related work}
 
+Parlare di SIFT-GIST-HOG per rappresentare feature. Chiaramente per i paper che ne fanno utlizzo. Noi utilizziamo CNN. Il dataset che utilizzano. Noi lo bilanciamo, alcuni no, altri utilizzano quadri di solo un museo. Il contesto nel quale vorrebero calarsi. Se utilizzano reti, come sono formate e che classificatore utilizzano. \\
+Tutti mirano più allo stile che al pittore. Solo il più recente non usa più SVM ma Fully connected (da verificare). Dire che nessuno, tranne 406, fanno transfer learning. Questo prova che si tratta ancora di un task poco affrontato (aperto), e che i recenti contributi nel campo delle CNNs possono/sembrano essere determinanti nel miglioramento delle prestazioni. Nei vari approcci affrontati, pare che le cnns siano la strada migliore. C'è la fiducia di poter superare il livello umano in futuro (magari in future works).
 \section{Dataset}
 
 \paragraph{Overview}\mbox{}\\
