@@ -13,7 +13,7 @@
 \usepackage{microtype}      % microtypography
 \usepackage{lipsum}
 
-\title{Artist Identification	\\  a comparison between AlexNet, GoogLeNet and ResNeXt}
+\title{Artist Identification	\\  A comparison between AlexNet, GoogLeNet and ResNeXt}
 
 
 \author{
@@ -175,11 +175,53 @@ Inoltre, per questo specifico task, ogni punto del quadro ha contenuto informati
 \textbf{STUDIARSI COSA VUOL DIRE FARE NORMALIZATION (ZERO CENTER) E PERCHÈ È UTILE}.
 
 \section{Method}\label{method}
+abbiamo considerato tre reti cnn ossia, alexnet, googlenet e resnext.
+Ad ogni rete abbiamo dato in input un'immagine RGB 3x224x224 e dato in output un valore di cofidenza per tutti e 23 gli artisti, prendendo il massimo come risultato della classificazione. 
+Per ognuna delle reti abbiamo utilizzato un classifier softmax con cross entropy loss.
+\begin{equation}
+L_{i}=-\log \left(\frac{e^{f_{y_{i}}}}{\sum_{j} e^{f_{j}}}\right)
+\end{equation}
+Spiegare prendendo spunto.
 
-\paragraph{CNNs from scratch}
+Prima di tutto abbiamo allenanato le reti from scratch, in modo da cercare di imparare le features solamente per il compito di artisti identification.\\
+Successivamente partendo dalle stesse architetture usando i pesi pretreinate sul ImageNet Dataset, per valutare se le features estratte per l'image recognition possono essere un buon punto di partenza per l'artist identification. Infatti ci aspettiamo che per determinati stili, come il Realism o reinassence, tali features possono essere utili, cosa non vera per cubismo, minimalismo, astrattismo.
+\paragraph{AlexNet}\mbox{}\\
+AlexNet was the winning entry in ILSVRC 2012. It solves the problem of image classification where the input is an image of one of 1000 different classes (e.g. cats, dogs etc.) and the output is a vector of 1000 numbers, achieving a top-5 error of 15,8\%.
+L'architettura è caratterizzata da 8 strati, 5 convolutional e 3 fully connected, con max pooling e ReLu come funzione di attivazione. RIFERIMENTO A IMMAGINE
+Un'altra caratteristica di ALexnet è l'utilizzo della tecnica di dropout, introdotta nello stesso anno in \cite{dropout}, per ridurre l'overfitting. 
+In dropout, a neuron is dropped from the network with a probability of 0.5. When a neuron is dropped, it does not contribute to either forward or backward propagation. 
+As a result, the learnt weight parameters are more robust and do not get overfitted easily. \\
 
-\paragraph{CNNs with Transfer Learning}
+MOTIVAZIONE SCELTA
 
+
+\paragraph{GoogLeNet}\mbox{}\\
+È stato il vincitore di ILSVRC 2014. It achieves 6.67\% top-5 error on ImageNet.
+L'architettura è caratterizzata da 22 layer, con alcune novità per quanto riguarda gli strati fully connected, la gestione del problema del vanish del gradiente, e l'introduzione di un cossiddetto inception module.\\
+Another interesting addition to the architecture is to change the second last fully-connected layer with an average pooling layer. This layer spatially averages the feature map, converting 7x7x1024 input to 1x1x1024, reducing the computation and the number of parameters, by a factor of 49. This average pooling layer is finally followed by a normal fully-connected layer with 1000 neurons (and 1024x1000 parameters), for the 1000 ImageNet classes.
+
+During training, to address the vanishing gradient problem, special extra structures are added to the network (these are removed during testing). These are
+auxiliary classifiers attached to intermediate layers. All the losses from each
+classifier gets added up, taking contribution from the auxiliary classifier lower
+than the main one, during training. The gradient from the main classifier which
+would have otherwise become very small, and thus slowing training, by time it
+reached the lower initial layers, receives gradient from the auxiliary classifiers
+and thus the net gradient becomes big enough to allow training to progress.
+
+\subparagraph{Inception Module}
+Inception Modules are used in GoogLeNet to allow for more efficient computation through a dimensionality reduction with stacked 1x1 convolutions. The modules were designed to solve the problem of computational expense, as well as overfitting, among other issues. The solution, in short, is to take multiple kernel filter sizes within the CNN, and rather than stacking them sequentially, ordering them to operate on the same level. 
+
+As a neural net deals with a vast array of images, with wide variation in the featured image content, also known as the salient parts, they need to be designed appropriately. The most simplified version of an inception module works by performing a convolution on an input with not one, but three different sizes of filters (1x1, 3x3, 5x5). Also, max pooling is performed. Then, the resulting outputs are concatenated and sent to the next layer.
+A method to reduce the number of computation is dimensionality reduction. This involves convolutions with 1x1 filters before convolutions with bigger filters.
+
+\paragraph{ResNeXt}
+ResNeXt was the first runner up in ILSVRC 2016, achieving 3.03\% top-5 error rate, superando la precisione umana.
+Si tratta di una cnn residual, ossia presenta i cosiddetti residual block, (spiegazione residual).
+The model name, ResNeXt, contains Next. It means the next dimension, on top of the ResNet, ossia la CNN vincitrice del  ILSVRC 2015. \\
+This next dimension is called the “cardinality” dimension.
+SPIEGARE NUOVO BLOCCO CON RIFERIMENTO A CARDINALITA
+
+Noi abbiamo utilizzato 
 
 \section{Experiments}\label{experiments}
 
@@ -268,7 +310,9 @@ Inoltre, per questo specifico task, ogni punto del quadro ha contenuto informati
 	Alex Krizhevsky, Ilya Sutskever, Geoffrey E. Hinton. ImageNet Classification with Deep Convolutional
 	Neural Networks. 2012
 	
-	
+	\bibitem{dropout}
+	G. E. Hinton, N. Srivastava, A. Krizhevsky, I. Sutskever and R. R. Salakhutdinov.
+	Improving neural networks by preventing co-adaptation of feature detectors. 2012
 	
 	
 \end{thebibliography}
