@@ -64,23 +64,54 @@ Artist identification is a task regarding recognition of the painter who depicte
 It's still nowadays a difficult problem to solve for the following reasons: \textit{1.} there are not many contributions yet and these rely on the latest models of deep learning (e.g. CNNs). \textit{2.} The available datasets are not as large as those used by models that solve more common tasks such as object detection or face recognition. \textit{3.} An artist's style can change a lot through his works, or it could be influenced by other painters. \\For example, it is well known that Paul Cézanne and Camille Pissarro, who have spent a period of their lives in close contact, have produced some works of similar style.\\
 This type of task is still done by art experts and contributions to this type of problem can help and lead to \textit{1.} the development of automatic fake artifact detection and \textit{2.} automatic cataloguing of artworks.\\
 
-We used three different CNNs: AlexNet (2012), GoogLeNet (2014) and ResNeXt (2016). For each of them, we have established two different ways of training: from scratch and with transfer learning  upon pre-trained version of such CNNs. Then we have observed and compared their performance. From our experiment we have obtained ... RISULTATI 82\% accuracy.\\
+We used three different CNNs: AlexNet (\cite{alexnet}), GoogLeNet (\cite{googlenet}) and ResNeXt (\cite{resneXt}). For each of them, we have established two different ways of training: from scratch and with transfer learning  upon pre-trained version of such CNNs. Then we have observed and compared their performance. From our experiment we have obtained ... RISULTATI 82\% accuracy.\\
 
 The rest of the essay is structured as follows: In section 2 we discuss (\textbf{METTI I REF}) similarities and differences between previous works and ours. In section 3 we explain which dataset we have used, how it was formed and which preprocessing and data augmentation techniques we have exploited. In section 4 we exhibit the CNNs' architectures and how we have trained them. In section 5 we show some details regarding the \textit{GCloud Compute Engine}'s configuration, the metrics used to assess the goodness of the models and the detailed results of this experiment. Finally, in section 6 we draw some conclusion and we outline some possibile future works which rely on our result.
 
 
 \section{Related Works}
 
-\paragraph{406}
+In questa sezione esponiamo alcuni lavori precedenti che sono correlati al nostro. Oltre che a definire quali sono i punti di partenza e di riferimento del nostro esperimento, ciò che segue dovrebbe convincere ulteriormente il lettore dell'ancora odierna difficoltà nel risolvere a pieno il task dell'artist identification.\\
+Di recente, il modello delle CNNs si è molto diffuso, questo grazie ai buoni risultati che esse producono in questo genere di task. Possiamo infatti distinguere i contributi a questo task tra quelli che vengono prima della diffusione delle CNNs, e quindi non ne fanno utilizzo, e quelli che invece ne beneficiano.\\
+Nel contesto del nostro problema, le features che caratterizzano lo stile di un'artista possono essere molte e difficili da ingegnerizzare, per esempio texture, shape, color, tone, variety, proportion,  pattern and brush strokes.\\
+È ben noto invece che il vantaggio delle CNNs sta nell'essere in grado di apprendere tutte quelle features che caratterizzano una immagine, senza quindi aver più il bisogno di dover identificare e ingegnerizzare una serie di features caratterizzanti.\\
+In lavori precedenti alle CNNs, si fa utilizzo di alcuni famosi approci di features detection come Scale Invariant Feature Transforms (SIFT) e Histograms of oriented gradients (HOG) (\cite{mensink2014},\cite{lowe04},\cite{lombardi05}, \cite{lazebnik06}, \cite{bosch08}, \cite{jou2011}). (ma è corretto citare paper che fanno solo riconoscimento di immagini?) Tali lavori sono accomunati dall'utilizzo di un classificatore SVM 1-vs-rest per classificare l'immagine, a differenza di \cite{jou2011} che fa utilizzo sia di SVM 1-vs-rest sia di Naïve Bayes classifier.\\ Comunque sia la maggior parte si concentrano piuttosto sulla classificazione di immagini generiche, mentre pochi altri si concentrano sul riconoscimento dello stile di un artwork (\cite{mensink2014},\cite{lombardi05},\cite{jou2011},\cite{Saleh2015}).\\
+Inoltre, alcuni di questi agiscono su dataset ridotti o non molto vari, come \cite{mensink2014} che utilizza l'insieme degli artwork di un solo museo, oppure \cite{jou2011} che si solo concentra su 5 (controlla) artisti. Invece, nel nostro lavoro ci focalizziamo sul riconoscimento di 23 artisti differenti, e per ognuno di essi prendiamo lo stesso numero di artefatti (\cite{ArtGANDataset}). 
 
-\paragraph{Art Painting Identification using Convolutional Neural Network (2017)}
+\cite{hong2017} mostra come risultato l'effettivo miglioramento di prestazioni nell'utilizzo di CNNs fino al 13.6\% in più rispetto SIFT, HOG o simili. Questo lavoro ha lo scopo di identificare la presenza di artwork che violano termini di copyright in programmi telesivi, serie tv, film o simili scenari. Utilizzano infatti diverse tecniche di distorsione delle immagini sul proprio dataset, cosa che per il nostro contesto sarebbe superflua. Sperimentano tre differenti CNNs ispirate ad AlexNet e VGG  allenandole from scratch con una inizializzazione dei pesi secondo una distribuzione gaussiana. Nel nostro lavoro, invece, utilizziamo CNNs pre-esistenti. È uno dei pochi che, come classificatore, non fa utilizzo di  SVM ma di 3 Fully Connected Layers, dei quali l'ultimo Soft-max.\\
+Altri lavori come \cite{Bar2014} e \cite{razavian2014} fanno sempre utilizzo di CNN per la generazione di features, per poi usare un classificatore SVM 1vsall.\\
+\cite{ArtistIdCNN406} viene utilizzata una delle CNNs più recenti: ResNet-18 (\cite{resnet}). Essa è un antenato di ResNeXt, una delle CNNs usate nel nostro esperimento. Come nel nostro lavoro, anche in \cite{ArtistIdCNN406} viene studiato il training from scratch e quello basato sul transfer learning.
+\\
+
+Negli ultimi anni il numero di CNNs per task di visual recognition è crescente, così come i loro contributi nel campo della computer vision. Ciò che manca è un paragone prestazionale fra questi ultimi modelli nel campo dell'artist identification e, più in generale, nei task di art-recognition. Tale paragone è lo scopo del nostro lavoro.
+
+
+\paragraph{Notes}
+\subparagraph{Artist Identification with Convolutional Neural Networks (2017)}
+\url{http://cs231n.stanford.edu/reports/2017/pdfs/406.pdf}\\
+\begin{itemize}
+	\item usano CNN e non sift/hog/simili
+	\item è il related work più simile al nostro
+	\item il contesto è quello del labelling automatico di quadri. Noi diremo anche il detection di fake.
+	\item Utilizza resnet-18, quindi uno dei latest model. Fa pretrained e from scratch.
+	\item il dataset è preso da kaggle, però basato su wikiart. Di 2300 artisti, si focalizzano solo su 57 (quelli con più di 300 quadri ognuno).
+\end{itemize}
+\subparagraph{Art Painting Identification using Convolutional Neural Network (2017)}
 \url{https://www.ripublication.com/ijaer17/ijaerv12n4_17.pdf}\\
 CNN for art painting identification.\\ Hanno applicato diversi tipi di distorsione perchè volevano simulare il riconoscimento di opere i TV, film o simili. Pensa a questa cosa in ottica di protezione del copyright. Questo ha portato alla data augmentation. "sliding window scheme [2-4] to extract the region of interest".
 \textbf{Architettura rete}: Nel training trasforma le immagini in 256x256 grayscale e poi scala i pixel value in -1,+1.  Inizializza i pesi a caso secondo una gaussiana "The ReLU nonlinearity is applied to the output of every convolutional and
 fully-connected layer; Spatial pooling is carried out by maxpooling layers; Adam Optimizer is used to minimize the loss." Tre tipi di architettura sfruttando tali moduli. La prima ispirata ad AlexNet, la seconda a VGG e la terza una versione ridotta della seconda. Loro quindi creano architetture, noi no.
 Mostrano le differenze di prestazione sulla terza architettura al variare dell'inizializzazione dei pesi/bias e dell'optimezir/learning rate (table 2 e 3). Questo paper sembra avere un approccio sperimentale migliore del nostro. Dovremmo prenderne spunto. Loro non fanno transfer learning, noi sì.
 
-\paragraph{Large-scale Classification of Fine-Art Paintings:
+\begin{itemize}
+	\item usano CNN e mostrano che sono meglio di SIFT come risultato.
+	\item il dataset è preso prendendo immagini da google e poi data augmentation con varie distortion
+	\item questo perchè loro si collocano nel contesto di riconoscere artefatti in film/tv per riconoscere eventuali violazioni di copyright.
+	\item progettano i moduli e li combinano in 3 modi diversi per ottenere 3 reti diverse ispirate a AlexNet  VGG
+	
+\end{itemize}
+
+\subparagraph{Large-scale Classification of Fine-Art Paintings:
 	Learning The Right Metric on The Right Feature (2015)}
 \url{https://arxiv.org/pdf/1505.00855.pdf}\\
 Vanno a riconoscere stile, genere e artista di un quadro. Elencano una serie di features oggetto di analisi: "space, texture, form, shape, color, tone and line are used. Other principles include movement, unity, harmony, variety, balance, contrast, proportion, and pattern. To
@@ -89,22 +120,39 @@ other descriptive concepts For the task of computer analyses of art, researchers
 that encode some of these artistic concepts, in particular
 brush strokes and color, which are encoded as low-level features such as texture statistics and color histograms (e.g. [19, 20]). Color and texture are highly prone to variations during the digitization of paintings; color is also affected by a painting’s age". Sostengono però che ingegnerizzare tutte queste features porterebbe ad un processo confusionario.  Le cnn permettono il "learning" delle features dai dati invece di pre-elaborare le features prima menzionate.\\ Loro comunque seguono una terza strategia: vanno a studiare lo stato dell'arte per vari elementi visivi. Poi usano metric learning  per vari tipi di previsioni: stile, genere e artista. Questo lo fanno in ottica di un sistema di raccomandazione. Tre metodologie: metric learning, feature fusion, metric-fusion.
 
-\paragraph{The Rijksmuseum Challenge:
+\begin{itemize}
+	\item dicono che fare le feature esplicite è complesso. Dicono che le cnn le estraggono da sole. Ma loro seguono la terza strada: estraggono prima le visual features e poi metric learning.
+	\item wikiart painting dataset
+\end{itemize}
+
+\subparagraph{The Rijksmuseum Challenge:
 	Museum-Centered Visual Recognition (2014)}
 \url{https://staff.fnwi.uva.nl/t.e.j.mensink/publications/mensink14icmr.pdf} bah.. di interessante hanno che stimano l'anno di creazione.
 
-\paragraph{Recognizing Image Style (2014)}
+\begin{itemize}
+	\item 1vsRest SVM
+	\item dataset solo Rijksmuseum in Amsterdam.
+	
+\end{itemize}
+
+\subparagraph{Recognizing Image Style (2014)}
 \url{https://arxiv.org/pdf/1311.3715.pdf} \\
 Qui operano su foto reali e quadri per predirne lo stile. "Distinct visual styles are apparent in art, cinematography, advertising, and have become extremely popular in amateur photography, with apps like Instagram leading the way". Sottolineano che "the distinctions between, say, Rococo versus pre-Rafaelite style are less relevant to modern photography and design." e anche che tali stili non sono in mutua esclusione. "This leads to one
 conclusion of our work: mid-level features derived from object datasets are generic for style
 recognition, and superior to hand-tuned features."
 
-\paragraph{Classification of Artistic Styles using Binarized
-	Features Derived from a Deep Neural Network ($\geq$ 2014)}\url{http://courses.cs.tau.ac.il/~wolf/papers/genrestyle.pdf}\\
+\subparagraph{Classification of Artistic Styles using Binarized
+	Features Derived from a Deep Neural Network (2014)}\url{http://courses.cs.tau.ac.il/~wolf/papers/genrestyle.pdf}\\
+\begin{itemize}
+	\item stanno sull'identificazione dello stile
+	\item usan CNN per generare feature e poi classificano con SVM 1vsRest
+	\item è una sorta di transfer learning: Decaf
+	\item dataset è subset di wikiart
+\end{itemize}
 
-\paragraph{Cosa fare per ogni related work}
+\subparagraph{Cosa fare per ogni related work}
 
-Parlare di SIFT-GIST-HOG per rappresentare feature. Chiaramente per i paper che ne fanno utlizzo. Noi utilizziamo CNN. Il dataset che utilizzano. Noi lo bilanciamo, alcuni no, altri utilizzano quadri di solo un museo. Il contesto nel quale vorrebero calarsi. Se utilizzano reti, come sono formate e che classificatore utilizzano. \\
+Parlare di SIFT-GIST-HOG per rappresentare feature. Chiaramente per i paper che ne fanno utlizzo. Noi utilizziamo CNN. Il dataset che utilizzano. Noi lo bilanciamo, alcuni no, altri utilizzano quadri di solo un museo. Il contesto nel quale vrrebero calarsi. Se utilizzano reti, come sono formate e che classificatore utilizzano. \\
 Tutti mirano più allo stile che al pittore. Solo il più recente non usa più SVM ma Fully connected (da verificare). Dire che nessuno, tranne 406, fanno transfer learning. Questo prova che si tratta ancora di un task poco affrontato (aperto), e che i recenti contributi nel campo delle CNNs possono/sembrano essere determinanti nel miglioramento delle prestazioni. Nei vari approcci affrontati, pare che le cnns siano la strada migliore. C'è la fiducia di poter superare il livello umano in futuro (magari in future works).
 \section{Dataset}
 
@@ -143,13 +191,77 @@ Inoltre, per questo specifico task, ogni punto del quadro ha contenuto informati
 %%% Comment out this section when you \bibliography{references} is enabled.
 \begin{thebibliography}{1}
 	
+	\bibitem{hong2017}
+	Yiyu Hong, Jongweon Kim, \newblock  Art Painting Identification using Convolutional Neural Network, \newblock International Journal of Applied Engineering Research, \newblock 2017
+	
+	\bibitem{Saleh2015}
+	B. Saleh and A. M. Elgammal.\newblock  Large-scale classification
+	of fine-art paintings: Learning the right metric on the right
+	feature. \newblock CoRR, abs/1505.00855, 2015.
+	\bibitem{Bar2014}
+	W. L. Bar Y., Levy N. Classification of artistic styles using binarized features derived from a deep neural network.
+	ECCV 2014.
+	
+	\bibitem{mensink2014}
+	T. Mensink and J. van Gemert. \newblock The rijksmuseum challenge:
+	Museum-centered visual recognition. \newblock 2014
+	
+	\bibitem{karayev2013}
+	S. Karayev, A. Hertzmann, H. Winnemoeller, A. Agarwala, and T. Darrell. Recognizing image style. CoRR,
+	abs/1311.3715, 2013.
+	
 	\bibitem{ArtistIdCNN406}
-	Nitin Viswanathan.
-	\newblock Artist Identification with Convolutional Neural Networks. \newblock 2017
+	Nitin Viswanathan, Standford University,
+	\newblock Artist Identification with Convolutional Neural Networks, \newblock 2017
 	
 	\bibitem{ArtGANDataset}
 	Un qualche nome... \newblock
 	\url{https://github.com/cs-chan/ArtGAN/tree/master/WikiArt Dataset}
+	
+	\bibitem{Lij2012}
+	E. H. J. Li, L. Yao and J. Z. Wang. \newblock Rhythmic brushstrokes
+	distinguish van gogh from his contemporaries: Findings via
+	automated brushstroke extractions. IEEE Trans. Pattern
+	Anal. Mach. Intell, \newblock 2012.
+	
+	\bibitem{lowe04}
+	D. G. Lowe. \newblock Distinctive image features from scale-invariant
+	keypoints,\newblock2004.
+	
+	\bibitem{lombardi05}
+	T. E. Lombardi. \newblock The classification of style in fine-art painting. ETD Collection for Pace University, \newblock 2005.
+	
+	\bibitem{lazebnik06}
+	S. Lazebnik, C. Schmid, and J. Ponce \newblock. Beyond bags of
+	features: Spatial pyramid matching for recognizing natural
+	scene categories, \newblock 2006.
+	
+	\bibitem{bosch08}
+	Z. A. M. X. Bosch, A. \newblock Image classification using rois and
+	multiple kernel learning,\newblock 2008.
+	
+	\bibitem{jou2011}
+	J. Jou and S. Agrawal. Artist identification for renaissance
+	paintings, 2011.
+	\bibitem{razavian2014}
+	A. H. S. J. C. S. Sharif Razavian, A. Cnn features off-theshelf: An astounding baseline for recognition, 2014.
+	
+	\bibitem{resnet}
+	Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun. Microsoft Research. 
+	Deep Residual Learning for Image Recognition. 2015
+	
+	\bibitem{resneXt}
+	Saining Xie, Ross Girshick, Piotr Dollar, Zhuowen Tu, Kaiming He. UC San Diego - Facebook AI Research. Aggregated Residual Transformations for Deep Neural Networks, 2017.
+	
+	\bibitem{googlenet}
+	Christian Szegedy, Wei Liu, Yangqing Jia, Pierre Sermanet, Scott Reed, Dragomir Anguelov, Dumitru Erhan, Vincent Vanhoucke, Andrew Rabinovich. Going Deeper with Convolutions. 2014
+	
+	\bibitem{alexnet}
+	Alex Krizhevsky, Ilya Sutskever, Geoffrey E. Hinton. ImageNet Classification with Deep Convolutional
+	Neural Networks. 2012
+	
+	
+	
 	
 \end{thebibliography}
 
