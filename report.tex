@@ -12,6 +12,7 @@
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
 \usepackage{lipsum}
+\usepackage{graphicx}
 
 \title{Artist Identification	\\  a comparison between AlexNet, GoogLeNet and ResNeXt}
 
@@ -72,17 +73,17 @@ The rest of the essay is structured as follows: In section 2 we discuss (\textbf
 \section{Related Works}
 
 
-\section{Dataset}
-\paragraph{Overview}\mbox{}\\
+\section{Dataset}\label{dataset}
+\subsection{Overview}\mbox{}\\
 The first requirement to train a CNN for artist identification is a dataset, of paintings of different artist, as large as possible. For our project we obtain a dataset from \cite{ArtGANDataset}, which is a subset of the WikiArt Dataset. \\
 The dataset contain about 19,000 images of 23 different artists, regarding very different styles, genres  and epochs. There are also three .csv files that labeled all the paintings for genre, style, and artist: for our work we have used only the last one.\\ \\
 In order to obtain a balanced dataset, we decided to select randomly 450 paintings for each artist, so in the end our dataset consists of 10,350 total images. \\
 The next step was to divied the entire dataset in training, validation and test set. \cite{ArtGANDataset} suggests a possibile partition, but we decided to create our own because there isn't a test set in their repository, and some paintings included in the training set are also in the validation set, 
 fact that can create a distorted evaluation of our model during training. Therefore, we split the dataset in training, validation and test sets using a 80-10-10 division per artist, obtaining a training set of 360 paintings per artist, and a validation and test sets each of 45 paintings per artist.
 
-\paragraph{Preprocessing and Data augmentation}\mbox{}\\
+\subsection{Preprocessing and Data augmentation}\mbox{}\\
 CNNs require a precise size for the images passed in it, so we had to modify the paintings in the dataset, considering that they vary widely in shape and size.\\
-So, first, we take a 224x224 crop of each input images, next we zero-center and normalize them, with mean and standard deviation calculated for each of the three channels red, green and blue (they are RGB images).  \\
+So, first, we take a 224$\times$224 crop of each input images, next we zero-center and normalize them, with mean and standard deviation calculated for each of the three channels red, green and blue (they are RGB images).  \\
 During training we also randomly horizontally flip the image with a probability of 50\%, and also take a random crop of it (not always the central pixels), for essentialy two reasons:
 \begin{itemize}
 	\item randomness create variety and can avoid overfit;
@@ -90,14 +91,66 @@ During training we also randomly horizontally flip the image with a probability 
 \end{itemize}
 Instead, for validation and test sets we always have taken a central crop, in order to obtain stable results not depending on crop position.
 
-\textbf{STUDIARSI COSA VUOL DIRE FARE NORMALIZATION (ZERO CENTER) E PERCHÈ È UTILE}.
+\section{Method}\label{method}
+In our work we have considered three different CNNs: AlexNet, GoogLeNet and ResNeXt. Every network we use takes as input a
+3$\times$224$\times$224 RGB image and outputs the scores for each of the 23 artists present in our dataset.
+\\
+For all of our networks, we use a softmax classifier with
+cross-entropy loss:
+\begin{equation}
+L_{i}=-\log \left(\frac{e^{f_{y_{i}}}}{\sum_{j} e^{f_{j}}}\right)
+\end{equation}
+\textbf{SPIEGARE}
 
-\section{Method}
+First, we have trained the networks from scratch, in order to allow the network to learn features solely for our specific task of artist identification. \\
+Afterwards, starting from networks with weights pre-trained on ImageNet dataset, we trained them using transfer learning to understand if a feature representation from ImageNet is a valuable starting point for our problem.\\
+In both approches, we replaced the last fully-connected layer of the CNNs with a new one to calculate a score for each artist in
+our dataset. We used \cite{pytorchguide} as a guide for replacing the fully-connected layer, and for performing transfer learning on the pre-trained networks.
 
-\paragraph{CNNs from scratch}
+\subsection{AlexNet}
+AlexNet was the winning entry in ILSVRC 2012. It solves the problem of image classification where the input is an image of one of 1000 different classes (e.g. cats, dogs etc.) and the output is a vector of 1000 numbers, achieving a top-5 error of 15,8\%.
+Architecture (Figure \ref{fig:alexnet}) is made up of eight layers, five convolutional, some of them followed by max pooling layers, and three fully-connected, with ReLU as activation function.\\
+AlexNet also uses dropout, introduced in 2012 in \cite{dropout}, to reduce overfitting. In dropout, a neuron is dropped from the network with a probability of 0.5. When a neuron is dropped, it does not contribute to either forward or backward propagation. 
+As a result, the learnt weight parameters are more robust and do not get overfitted easily.\\
+We decided to include AlexNet in our work because it represent the starting point of image classification with CNN, so it would be iteresting to compare its performance on our task with more recent, complex and deep networks.
 
-\paragraph{CNNs with Transfer Learning}
 
+PROBLEMA IMMAGINE CON 227X227
+
+
+\subsection{GoogLeNet}
+GoogLeNet won the ILSVRC 2014 achieving 6.67\% top-5 error on ImageNet. It is composed of 22 layers, with different innovations regarding the fully-connected layers, the vanishing gradient problem and a new inception module.\\
+An interesting addition to the architecture is to change the second last fully-connected layer with an average pooling layer. This layer spatially averages the feature map, converting 7x7x1024 input to 1x1x1024, reducing the computation and the number of parameters, by a factor of 49. This average pooling layer is finally followed by a normal fully-connected layer with 1000 neurons (and 1024x1000 parameters), for the 1000 ImageNet classes.
+During training, to address the vanishing gradient problem, special extra structures are added to the network (these are removed during testing). These are auxiliary classifiers attached to intermediate layers. All the losses from each classifier gets added up, taking contribution from the auxiliary classifier lower
+than the main one, during training. The gradient from the main classifier which would have otherwise become very small, and thus slowing training, by time it reached the lower initial layers, receives gradient from the auxiliary classifiers and thus the net gradient becomes big enough to allow training to progress.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/GoogLeNet}
+	\caption[]{GoogLeNet's architecture}
+	\label{fig:googlenet}
+\end{figure}
+
+\subparagraph{Inception module}\mbox{}\\
+Inception modules are used in GoogLeNet to allow for more efficient computation through a dimensionality reduction with stacked 1x1 convolutions. The modules were designed to solve the problem of computational expense, as well as overfitting, among other issues. The solution, in short, is to take multiple kernel filter sizes within the CNN, and rather than stacking them sequentially, ordering them to operate on the same level. 
+
+As a neural net deals with a vast array of images, with wide variation in the featured image content, also known as the salient parts, they need to be designed appropriately. The most simplified version of an inception module works by performing a convolution on an input with not one, but three different sizes of filters (1x1, 3x3, 5x5). Also, max pooling is performed. Then, the resulting outputs are concatenated and sent to the next layer.
+A method to reduce the number of computation is dimensionality reduction. This involves convolutions with 1x1 filters before convolutions with bigger filters.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/inc_module}
+	\caption{Inception module with dimension reduction}
+	\label{fig:incmodule}
+\end{figure}
+
+
+
+
+\subparagraph{ResNeXt}
+ResNeXt was the first runner up in ILSVRC 2016, achieving 3.03\% top-5 error rate, superando la precisione umana.
+Si tratta di una cnn residual, ossia presenta i cosiddetti residual block, (spiegazione residual).
+The model name, ResNeXt, contains Next. It means the next dimension, on top of the ResNet, ossia la CNN vincitrice del  ILSVRC 2015. \\
+This next dimension is called the “cardinality” dimension.
+SPIEGARE NUOVO BLOCCO CON RIFERIMENTO A CARDINALITA
 
 \section{Experiments}
 
@@ -124,6 +177,14 @@ Instead, for validation and test sets we always have taken a central crop, in or
 	\bibitem{ArtGANDataset}
 	Un qualche nome... \newblock
 	\url{https://github.com/cs-chan/ArtGAN/tree/master/WikiArt Dataset}
+	
+	\bibitem{pytorchguide}
+	Sasank Chilamkurthy.
+	\url{https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html}
+	
+	\bibitem{dropout}
+	G. E. Hinton, N. Srivastava, A. Krizhevsky, I. Sutskever and R. R. Salakhutdinov.
+	Improving neural networks by preventing co-adaptation of feature detectors. 2012
 	
 \end{thebibliography}
 
