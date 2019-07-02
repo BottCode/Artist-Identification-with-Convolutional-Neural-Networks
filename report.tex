@@ -48,10 +48,10 @@ Università di Padova \\
 \maketitle
 
 \begin{abstract}
-	In this essay we present our work for the project of the Cognitive Services course.
+	\textit{In this essay we present our work for the project of the Cognitive Services course.
 	The problem we face is the artist identification task, that is being able to recognize the author of a painting, given an image of it.\\
 	In order to resolve this task, we have exploited some differents Convolutional Neural Networks (CNNs) that come with \textit{Pytorch} library. Such networks have been trained in according to two distinct approaches: training them from scratch or exploiting pre-trained models using transfer learning technique. We used the \textit{Google Cloud Plataform} to train and evaluate our models.\\
-	What we have achieved is a set of results which are in line with the  state-of-the-art, confirming that CNNs are suitable to solve this type of task.
+	What we have achieved is a set of results which are in line with the  state-of-the-art, confirming that CNNs are suitable to solve this type of task.}
 \end{abstract}
 
 
@@ -76,19 +76,19 @@ The rest of the essay is structured as follows: In section \ref{relwor} we discu
 
 \section{Related Works}\label{relwor}
 
-In questa sezione esponiamo alcuni lavori precedenti che sono correlati al nostro. Oltre che a definire quali sono i punti di partenza e di riferimento del nostro esperimento, ciò che segue dovrebbe convincere ulteriormente il lettore dell'ancora odierna difficoltà nel risolvere a pieno il task dell'artist identification.\\
-Di recente, il modello delle CNNs si è molto diffuso, questo grazie ai buoni risultati che esse producono in questo genere di task. Possiamo infatti distinguere i contributi a questo task tra quelli che vengono prima della diffusione delle CNNs, e quindi non ne fanno utilizzo, e quelli che invece ne beneficiano.\\
-Nel contesto del nostro problema, le features che caratterizzano lo stile di un'artista possono essere molte e difficili da ingegnerizzare, per esempio texture, shape, color, tone, variety, proportion,  pattern and brush strokes.\\
-È ben noto invece che il vantaggio delle CNNs sta nell'essere in grado di apprendere tutte quelle features che caratterizzano una immagine, senza quindi aver più il bisogno di dover identificare e ingegnerizzare una serie di features caratterizzanti.\\
-In lavori precedenti alle CNNs, si fa utilizzo di alcuni famosi approci di features detection come Scale Invariant Feature Transforms (SIFT) e Histograms of oriented gradients (HOG) (\cite{mensink2014},\cite{lowe04},\cite{lombardi05}, \cite{lazebnik06}, \cite{bosch08}, \cite{jou2011}). (ma è corretto citare paper che fanno solo riconoscimento di immagini?) Tali lavori sono accomunati dall'utilizzo di un classificatore SVM 1-vs-rest per classificare l'immagine, a differenza di \cite{jou2011} che fa utilizzo sia di SVM 1-vs-rest sia di Naïve Bayes classifier.\\ Comunque sia la maggior parte si concentrano piuttosto sulla classificazione di immagini generiche, mentre pochi altri si concentrano sul riconoscimento dello stile di un artwork (\cite{mensink2014},\cite{lombardi05},\cite{jou2011},\cite{Saleh2015}).\\
-Inoltre, alcuni di questi agiscono su dataset ridotti o non molto vari, come \cite{mensink2014} che utilizza l'insieme degli artwork di un solo museo, oppure \cite{jou2011} che si solo concentra su 5 (controlla) artisti. Invece, nel nostro lavoro ci focalizziamo sul riconoscimento di 23 artisti differenti, e per ognuno di essi prendiamo lo stesso numero di artefatti (\cite{ArtGANDataset}). 
+In this section we show some previous works related to ours. In addition to defining the references our experiment, the following should further convince the reader of present-day difficulty in achieving good precision in artist identification.\\
+Recently CNNs have become widespread, this is due to the good performance and results obtained in this kind of task. In fact, we can distinguish the contributions to this task between those that come before the spreading of the CNNs, and thus do not use them, and those that instead benefit from it.\\
+In our problem, the features that characterize an artist's style can be many and difficult to engineer, such as texture, shape, color, tone, variety, proportion, pattern and brush strokes.\\
+Instead, it is well known that CNNs are able to learn those features that characterize an image, without having to identify and engineer a set of characterizing features.\\
+In works prior to CNNs, some famous approaches of detection features are exploited, such as Scale Invariant Feature Transforms (SIFT) and Histograms of oriented gradients (HOG) (\cite{Saleh2015}, \cite{mensink2014}, \cite{lombardi05}, \cite{jou2011}). These works have in common the use of an SVM 1-vs-rest classifier, except \cite{jou2011} which uses both SVM 1-vs-rest and Naïve Bayes classifier.\\ However, \cite{lombardi05} and \cite{jou2011} face the problem of style recognition, which is different than artist identification.\\
+In addition, some of these perform on small or not so heterogenous datasets, such as \cite{mensink2014} which uses the artwork of a single museum, or \cite{jou2011} which focuses on only 5 artists. Instead, in our work we focus on recognizing 23 different artists, and for each of them we take the same number of artifacts (\cite{ArtGANDataset}). \\
 
-\cite{hong2017} mostra come risultato l'effettivo miglioramento di prestazioni nell'utilizzo di CNNs fino al 13.6\% in più rispetto SIFT, HOG o simili. Questo lavoro ha lo scopo di identificare la presenza di artwork che violano termini di copyright in programmi telesivi, serie tv, film o simili scenari. Utilizzano infatti diverse tecniche di distorsione delle immagini sul proprio dataset, cosa che per il nostro contesto sarebbe superflua. Sperimentano tre differenti CNNs ispirate ad AlexNet e VGG  allenandole from scratch con una inizializzazione dei pesi secondo una distribuzione gaussiana. Nel nostro lavoro, invece, utilizziamo CNNs pre-esistenti. È uno dei pochi che, come classificatore, non fa utilizzo di  SVM ma di 3 Fully Connected Layers, dei quali l'ultimo Soft-max.\\
-Altri lavori come \cite{Bar2014} e \cite{razavian2014} fanno sempre utilizzo di CNN per la generazione di features, per poi usare un classificatore SVM 1vsall.\\
-\cite{ArtistIdCNN406} viene utilizzata una delle CNNs più recenti: ResNet-18 (\cite{resnet}). Essa è un antenato di ResNeXt, una delle CNNs usate nel nostro esperimento. Come nel nostro lavoro, anche in \cite{ArtistIdCNN406} viene studiato il training from scratch e quello basato sul transfer learning.
+One of the results achieved in \cite{hong2017} shows the actual improvement of performance in the use of CNNs up to 13.6\% more than SIFT, HOG or similar.  This work aims to detect artwork that violates copyright terms in television programs, TV series, movies or similar scenarios. They use different techniques to distort the images on their dataset, which would not be suitable for our context. They experiment with three different CNNs inspired by AlexNet and VGG, then they trained them from scratch with a weights' initialization according to a Gaussian distribution. In our work, instead, we use pre-existing CNNs. \cite{hong2017} is one of the few works which does not use SVM as classifier, but 3 Fully Connected Layers, and the last of them is a Soft-Max layer.\\
+Other works like \cite{Bar2014} and \cite{razavian2014} use a CNN to generate features, then use an SVM 1-vs-rest classifier on top of it.
+\cite{ArtistIdCNN406} exploit one of the most recent CNNs: ResNet-18 (\cite{resnet}). It is an ancestor of ResNeXt (\cite{resneXt}), one of the CNNs used in our experiment. As in our work, also in \cite{ArtistIdCNN406} either training from scratch and training through transfer learning are studied.
 \\
 
-Negli ultimi anni il numero di CNNs per task di visual recognition è crescente, così come i loro contributi nel campo della computer vision. Ciò che manca è un paragone prestazionale fra questi ultimi modelli nel campo dell'artist identification e, più in generale, nei task di art-recognition. Tale paragone è lo scopo del nostro lavoro.
+In the latest years, the number of CNNs for visual recognition task is growing, as well as their contributions in the field of computer vision. What is missing is a performance comparison between the latter models in the field of artist identification and, more generally, in art-recognition tasks. This comparison is the purpose of our work.
 
 
 \paragraph{Notes}
@@ -256,9 +256,6 @@ Noi abbiamo utilizzato
 	T. Mensink and J. van Gemert. \newblock The rijksmuseum challenge:
 	Museum-centered visual recognition. \newblock 2014
 	
-	\bibitem{karayev2013}
-	S. Karayev, A. Hertzmann, H. Winnemoeller, A. Agarwala, and T. Darrell. Recognizing image style. CoRR,
-	abs/1311.3715, 2013.
 	
 	\bibitem{ArtistIdCNN406}
 	Nitin Viswanathan, Standford University,
@@ -273,22 +270,9 @@ Noi abbiamo utilizzato
 	distinguish van gogh from his contemporaries: Findings via
 	automated brushstroke extractions. IEEE Trans. Pattern
 	Anal. Mach. Intell, \newblock 2012.
-	
-	\bibitem{lowe04}
-	D. G. Lowe. \newblock Distinctive image features from scale-invariant
-	keypoints,\newblock2004.
-	
+		
 	\bibitem{lombardi05}
 	T. E. Lombardi. \newblock The classification of style in fine-art painting. ETD Collection for Pace University, \newblock 2005.
-	
-	\bibitem{lazebnik06}
-	S. Lazebnik, C. Schmid, and J. Ponce \newblock. Beyond bags of
-	features: Spatial pyramid matching for recognizing natural
-	scene categories, \newblock 2006.
-	
-	\bibitem{bosch08}
-	Z. A. M. X. Bosch, A. \newblock Image classification using rois and
-	multiple kernel learning,\newblock 2008.
 	
 	\bibitem{jou2011}
 	J. Jou and S. Agrawal. Artist identification for renaissance
