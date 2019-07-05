@@ -182,17 +182,20 @@ The training of the models and the experiments were performed on a virtual machi
    	\label{table:specVM}
 \end{table}
 
-\subsection{Implementation Details}
+\subsection{Implementation Details}\label{ImplDet}
 
-We chose the Adam's update rule because the experiments using SGD were worse. The parameters we used are the default ones, i.e. learning rate $= 10^{-3}, \beta_{1}  = 0.9$ and $\beta_{2} = 0.999$. \\
+Per tutte le reti abbiamo testato le performance per diversi valori di LR, cioè da 10allameno2 a 10allameno5. Per ognuna di esse abbiamo riscontrato che lr=10allameno3 è il valore che permette di convergere più velocemente al miglior risultato e quindi tutti gli esperimenti riportati in questa sezione fanno riferimento a questo valore di lr. In tabella ?? riportiamo le performance di Resnext al variare di tale valore.
+
+We chose the Adam's update rule because the experiments using SGD were worse. \textbf{Abbiamo impostato il }learning rate $= 10^{-3}$ mentre per gli altri papametri we used the default ones, i.e. $\beta_{1}  = 0.9$ and $\beta_{2} = 0.999$.  \textbf{MA COSA SONO beta1 e BETA2}\\
 
 In transfer learning training, we set the number of epochs and the batch size to 15 and 32 respectively.  For each model chosen, pytorch makes available the final weights of these models trained on the ImageNet dataset (\cite{imagenet}), which makes transfer learning very easy to exploit.\\
-Initially, updating of weights is only allowed on those concerning FC-layers. With the aim of achieving higher accuracy, we have decided to allow the update of all weights to the entire network if for 3 consecutive epochs the accuracy does not improve by 3 percentage points. When this condition occurs, the update of the weights will be allowed on the whole network until the end of the training with a learning rate ten times smaller. This strong decrease is motivated by the fundamental idea of the use of transfer learning: it is assumed that the pre-trained weights are already "close" or enough good to those we are looking for, so it is good to search for them with a relatively small step-size.
+\textbf{We first start training the network updating the weights only in the FC-layers, ma i risultati ottenuti non erano buoni}.\\
+With the aim of achieving higher accuracy, \textbf{come sperimentato} in \cite{ArtistIdCNN406}, we have decided to allow the update of the weights in the whole network if, for 3 consecutive epochs, the validation set's accuracy does not improve by 3 percentage points. When this condition occurs, learning rate is decreased by a factor of 10. This strong decrease is motivated by the fundamental idea of the use of transfer learning: it is assumed that the pre-trained weights are already "close" or enough good to those we are looking for, so it is good to search for them with a relatively small step-size.
 \\
 
 In training from scratch, the number of epochs was set to 20, while the batch size remained 32.\\ 
 Initialisation of the weights follows a uniform distribution in $[-x, x]$ where $x=1/\sqrt n$ and $n$ is the number of inputs to a given neuron (\textbf{STA COSA È DA VERIFICARE})\\
-We have experimented what in pytorch is called \textit{scheduler}, i.e. every 7 epochs the learning rate was divided by 10. This strategy, however, has not led to improvements and in fact the results exposed have been obtained without the use of this technique.
+We have experimented what in pytorch is called \textit{scheduler}, i.e. every 7 epochs the learning rate is decreased by a factor of 10 . This strategy, however, has not led to improvements and in fact the results exposed have been obtained without the use of this technique.
 
 \subsection{Evaluation metrics}
 Per valutare le nostre reti abbiamo calcolato la top-1 accuracy, ossia quando un quadro viene classificato del pittore esatto, e la top-3 accuracy, ossia un quadro viene classificato correttamente se il suo autore e' compreso tra i 3 risultati con highest score generato dalla rete.
@@ -202,17 +205,6 @@ Infine i risulati ottenuti, oltre a confoirntarli tra di loro, li abbiamo confor
 I riosultati piu' interessanti sono stati riportati sottoforma di grafico o tabella nella prossima sezione results.
 
 \subsection{Results}\mbox{}\\
-
-Confusion matrix, varie figura/tabelle
-\begin{itemize}
-	\item Magari plot di accuracy e loss
-	\item sezione from scratch 
-	\item e sezione fine-tuning
-	\item magari comparato con previous works nelle tabella (cercare i risultati!!)
-	\item valutazioni su resneXt. learning rate variation. 
-\end{itemize}
-TABELLE: due tabelle. Una from scratch e una fine tuning. Riportiamo train accuracy e test accuracy. \\
-GRAFICI: Nel paragone fra le 3 reti fra un grafico per rete con plottato l'andamento di acc su training e acc su validation (argomentazioni sull'overfitting). Questo sia per fine tuning che per from scratch. Confusion matrix col miglior resnext (argomentazione su alcuni pittori si somigliano come cezanne e pissarro e alcuni non rappresentano fedelmente la realtà come dalì e van gogh). Perchè monet è confuso con pissarro?
 
 La tabella X contiene i risultati complessivi ottenuti per le varie reti, sia per quanto riguarda il training from scratch (left) che per l'allenamento with transfer learning (right), comprendendo anche il riferimento ai rusultati di \cite{ArtistIdCNN406}.\\
 Il primo aspetto che possiamo notare, confrontando le nostre 3 reti, e' che AlexNet ottiene performance nettamente peggiori in tutti gli esperimenti, questo ci fa capire come effettivamente la complessita', profondita' crescente della rete permetta di raggiungere risultati migliori, cosa che ci si aspettava.
@@ -236,6 +228,17 @@ Un altro motivo che porta alla miss-classfication e' la somiglianza dei quadri t
 Un'ultima considerazione riguarda artisti che hanno prodotto quadri con stili molto diversi tra di loro, come possiamo vedere nella Figura X dove sono rappresentati due quadri di Van Gogh. Questo complica notevolmente la classificazione, portando in qualche caso a una accuracy non ottimale (Van Gogh 33/45)
 
 
+ANDAMENTI ACCURACY
+
+In figure \ref{fig:accscratch} vediamo l'andamento della top-1 acc sul training e validation set delle varie CNNs allenate from scratch. Ciò che si vede su tutte le reti è che le accuracy sul validation set e sul training set hanno andamenti simili, provando che i modelli non sono soggetti ad overfitting.\\
+Alla luce di ciò, con un dataset più vasto e un maggior numero di epoche, si potrebbero ottenere performance ancora migliori.
+
+
+
+In figure \ref{fig:acctransfer} vediamo invece l'andamento della stessa metrica sulle reti allenate con transfer learning.  
+In tutte le reti, after few epochs, si nota un deciso incremento della pendenza. Questo corrisponde al momento in cui viene data la possibilità alla rete di aggiornarne non solo i pesi dei FC, ma anche di quelli di tutta la rete, come precedentemente esposto in \ref{ImplDet}. Da questo si intuisce che le reti pre-trained cercano di adattarsi all'artist identification.\\
+
+Si nota inoltre che Googlenet e resnext, dopo circa 10 epoche, sono affette dall'overfitting. Infatti si vede una progressiva crescita nella differenza fra le due accuracy. Questo ci fa capire che per queste due reti poteva bastare un numero minore di epoche.  Comunque sia i risultati ottenuti sono migliori di quelli dei related works.
 
 
 % Please add the following required packages to your document preamble:
@@ -273,7 +276,7 @@ Un'ultima considerazione riguarda artisti che hanno prodotto quadri con stili mo
 	\includegraphics[width=.33\textwidth]{graphs/res_training}
 	
 	\caption{default}
-	\label{fig:figure3}
+	\label{fig:acctransfer}
 	
 \end{figure}
 
@@ -285,7 +288,7 @@ Un'ultima considerazione riguarda artisti che hanno prodotto quadri con stili mo
 	\includegraphics[width=.33\textwidth]{graphs/res_scratch}
 	
 	\caption{default}
-	\label{fig:figure4}
+	\label{fig:accscratch}
 	
 \end{figure}
 \begin{figure}
