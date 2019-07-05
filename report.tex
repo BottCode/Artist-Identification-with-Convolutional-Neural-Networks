@@ -12,6 +12,8 @@
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
 \usepackage{lipsum}
+\usepackage{multirow}
+\usepackage{graphicx}
 
 \title{Artist Identification	\\  A comparison between AlexNet, GoogLeNet and ResNeXt}
 
@@ -60,6 +62,7 @@ Università di Padova \\
 
 
 \section{Introduction}
+\textbf{METTERE QUADRI ARTISTI (MAGARI STILI DIVERSI DELLO STESSO ARTISTA)}
 Artist identification is a task regarding recognition of the painter who depicted a certain painting, given an image of it.\\
 It's still nowadays a difficult problem to solve for the following reasons:
 \begin{itemize}
@@ -191,6 +194,12 @@ In training from scratch, the number of epochs was set to 20, while the batch si
 Initialisation of the weights follows a uniform distribution in $[-x, x]$ where $x=1/\sqrt n$ and $n$ is the number of inputs to a given neuron (\textbf{STA COSA È DA VERIFICARE})\\
 We have experimented what in pytorch is called \textit{scheduler}, i.e. every 7 epochs the learning rate was divided by 10. This strategy, however, has not led to improvements and in fact the results exposed have been obtained without the use of this technique.
 
+\subsection{Evaluation metrics}
+Per valutare le nostre reti abbiamo calcolato la top-1 accuracy, ossia quando un quadro viene classificato del pittore esatto, e la top-3 accuracy, ossia un quadro viene classificato correttamente se il suo autore e' compreso tra i 3 risultati con highest score generato dalla rete.
+
+Infine i risulati ottenuti, oltre a confoirntarli tra di loro, li abbiamo conforntati con [mettere citazione], che e' il lavoro piu simile al nostro.
+
+I riosultati piu' interessanti sono stati riportati sottoforma di grafico o tabella nella prossima sezione results.
 
 \subsection{Results}\mbox{}\\
 
@@ -205,6 +214,98 @@ Confusion matrix, varie figura/tabelle
 TABELLE: due tabelle. Una from scratch e una fine tuning. Riportiamo train accuracy e test accuracy. \\
 GRAFICI: Nel paragone fra le 3 reti fra un grafico per rete con plottato l'andamento di acc su training e acc su validation (argomentazioni sull'overfitting). Questo sia per fine tuning che per from scratch. Confusion matrix col miglior resnext (argomentazione su alcuni pittori si somigliano come cezanne e pissarro e alcuni non rappresentano fedelmente la realtà come dalì e van gogh). Perchè monet è confuso con pissarro?
 
+La tabella X contiene i risultati complessivi ottenuti per le varie reti, sia per quanto riguarda il training from scratch (left) che per l'allenamento with transfer learning (right), comprendendo anche il riferimento ai rusultati di \cite{ArtistIdCNN406}.\\
+Il primo aspetto che possiamo notare, confrontando le nostre 3 reti, e' che AlexNet ottiene performance nettamente peggiori in tutti gli esperimenti, questo ci fa capire come effettivamente la complessita', profondita' crescente della rete permetta di raggiungere risultati migliori, cosa che ci si aspettava.
+In particolare, nell'allenamento from scratch essa ottiene un 20\% in meno di accuracy, rispetto le altre reti, che diventa circa un 10\% di media nel transfer learning, dimostrando come il transfer learning sia un ottima tecnica per ottenere rislutati discereti anche con reti non troppo complesse (87\% di top-3 accuracy nel test set).
+
+SCRATCH-LEARNING
+Per tutte le reti possiamo notare come l'allenamento with tl ottiene risutalti circa 40\% migliori rispetto al from scratch. Questo ci fa capire come il pre-trained su imagenet, dataset molto piu ampio del nostro, sia un ottimo punto di partenza e che quindi i task di image classification e artist identification si assomiglino. RIGUARDARE \textit{a feature representation from ImageNet is a valuable starting point for artist identification. }
+
+La nostra rete migliore risulta quindi essere Resnext with transfer learning, raggiungegngo un ottimo 80\% di top-1 accuraci e 93 nella top-3, meaning that it can narrow down the artist to three in the vast majority
+of cases. 
+
+
+CONFUSION MATRIX 
+Figure 4 shows a confusion matrix. Each row represents the true artist and each column represents a predicted artist. Ideally, we want as many predictions as possible to be concentrated on the diagonal as this means that the network correctly predicted the true artist. The maximum possible value for a cell in the confusion matrix is 45, since there are 45 paintings per artist in the dataset.\\
+In generale possiamo vedere come la maggior parte dei quadri venga classficata nel modo corretto, con i colori della diagonale rossi e gialli, ossia maggiore di 30 su 45. 
+
+Nel dettaglio gli artisti che ottengono una precisione maggiore (44/45) sono Boudin, aivazovsky, kirchner. Ad esempio Ivan Aivazovsky produced many portraits and landscapes, over half of all of his paintings are realistic depictions of coastal scenes and seascapes. La caratteristica di dipengere scene o oggetti reali, rende la classificazione di questi quadri maggiormente simile all' iomage classification e dai risulati che abbiamo ottenuto notiamo che i pittori con quadri con queste caratteristiche ottengono una accuracy nella classficiazione migliore.
+
+Negli aertisti che hanno ottenuto una accuracy piu' bassa abbiamo notato delle caratteristiche comuni. Alcuni di essi fanno parte di stili come il surrealismo, cubismo o espressionismo che li porta a reallizare quadri che non rappresentato la realta', quindi piu difficli da classificare; infatti pablo Picasso, il fondatore del cubismo, ottiene le performance peggiori (30/45). \\
+Un altro motivo che porta alla miss-classfication e' la somiglianza dei quadri tra diversi artisti. L'esempio piu' evidente lo si ha in Ilya Repin, infatti la rete ha predetto Kustodiev come l'artista di 8 quadri di Repin. Questo non e' un fatto cosi sorprendente in quanto Ilya Repin e' stato l'insegnate di Boris Kustodiev, influenzato notevolmente il suo stile.
+Un'ultima considerazione riguarda artisti che hanno prodotto quadri con stili molto diversi tra di loro, come possiamo vedere nella Figura X dove sono rappresentati due quadri di Van Gogh. Questo complica notevolmente la classificazione, portando in qualche caso a una accuracy non ottimale (Van Gogh 33/45)
+
+
+
+
+% Please add the following required packages to your document preamble:
+
+\begin{table}[]
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		\multicolumn{5}{|c|}{\textbf{Training from scratch}}                                                          \\ \hline
+		\multirow{2}{*}{\textbf{Network}} & \multicolumn{2}{c|}{\textbf{Top-1}} & \multicolumn{2}{c|}{\textbf{Top-3}} \\ \cline{2-5} 
+		& Train acc        & Test acc         & Train acc        & Test acc         \\ \hline
+		AlexNet                           & 0.23103          & 0.27439          & 0.46159          & 0.51304          \\ \hline
+		GoogLeNet                         & 0.42669          & 0.46956          & 0.68285          & 0.70628          \\ \hline
+		ResNeXt-50                        & \textbf{0.50531} & \textbf{0.50048} & \textbf{0.74275} & \textbf{0.74782} \\ \hline
+		ResNet-18 \cite{ArtistIdCNN406}                    & 0.516            & 0.511            & 0.737            & 0,710            \\ \hline
+	\end{tabular}
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		\multicolumn{5}{|c|}{\textbf{Training with transfer learning}}                                                           \\ \hline
+		\multirow{2}{*}{\textbf{Network}} & \multicolumn{2}{c|}{\textbf{Top-1}}  & \multicolumn{2}{c|}{\textbf{Top-3}} \\ \cline{2-5} 
+		& Train acc        & Test acc          & Train acc         & Test acc        \\ \hline
+		AlexNet                           & 0.7134           & 0.68695           & 0.88925           & 0.87439         \\ \hline
+		GoogLeNet                         & 0.87536          & 0.80579           & 0.96787           & 0.92492         \\ \hline
+		ResNeXt-50                        & \textbf{0.91413} & \textbf{0.812560} & \textbf{0.98417}  & \textbf{0.9343} \\ \hline
+		ResNet-18 \cite{ArtistIdCNN406}                    & 0.907            & 0.777             & 0.973             & 0.898           \\ \hline
+	\end{tabular}
+\end{table}
+
+
+
+\begin{figure}[htp]
+	
+	\centering
+	\includegraphics[width=.33\textwidth]{graphs/alex_training}\hfill
+	\includegraphics[width=.33\textwidth]{graphs/google_training}\hfill
+	\includegraphics[width=.33\textwidth]{graphs/res_training}
+	
+	\caption{default}
+	\label{fig:figure3}
+	
+\end{figure}
+
+\begin{figure}[htp]
+	
+	\centering
+	\includegraphics[width=.33\textwidth]{graphs/alex_scratch}\hfill
+	\includegraphics[width=.33\textwidth]{graphs/google_scratch}\hfill
+	\includegraphics[width=.33\textwidth]{graphs/res_scratch}
+	
+	\caption{default}
+	\label{fig:figure4}
+	
+\end{figure}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\linewidth]{graphs/confusion}
+	\caption{Confusion matrix for top-1 classification on ResNeXt test set}
+	\label{fig:confusion}
+\end{figure}
+
+
+\begin{figure}[htp]
+	
+	\centering
+	\includegraphics[width=.5\textwidth]{image/1280px-Van_Gogh_-_Starry_Night_-_Google_Art_Project}\hfill
+	\includegraphics[height=.5\textwidth]{image/vincent-van-gogh_seated-man-with-a-beard-1886-1}
+	
+	\caption{default}
+	\label{fig:vangogh}
+	
+\end{figure}
 
 \section{Conclusions}\label{conclusions}
 
@@ -232,7 +333,7 @@ GRAFICI: Nel paragone fra le 3 reti fra un grafico per rete con plottato l'andam
 	\newblock Artist Identification with Convolutional Neural Networks, \newblock 2017
 	
 	\bibitem{ArtGANDataset}
-	Un qualche nome... \newblock
+	Dataset:
 	\url{https://github.com/cs-chan/ArtGAN/tree/master/WikiArt Dataset}
 	
 	\bibitem{Lij2012}
