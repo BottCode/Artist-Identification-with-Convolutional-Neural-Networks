@@ -13,6 +13,7 @@
 \usepackage{microtype}      % microtypography
 \usepackage{lipsum}
 \usepackage{graphicx}
+\usepackage{multirow}
 
 \title{Artist Identification	\\  a comparison between AlexNet, GoogLeNet and ResNeXt}
 
@@ -114,12 +115,16 @@ AlexNet also uses dropout, introduced in 2012 in \cite{dropout}, to reduce overf
 As a result, the learnt weight parameters are more robust and do not get overfitted easily.\\
 We decided to include AlexNet in our work because it represent the starting point of image classification with CNN, so it would be iteresting to compare its performance on our task with more recent, complex and deep networks.
 
-
-PROBLEMA IMMAGINE CON 227X227
-
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/AlexNet}
+	\caption{AlexNet's architecture}
+	\label{fig:alexnet}
+\end{figure}
 
 \subsection{GoogLeNet}
-GoogLeNet won the ILSVRC 2014 achieving 6.67\% top-5 error on ImageNet. It is composed of 22 layers, with different innovations regarding the fully-connected layers, the vanishing gradient problem and a new inception module.\\
+GoogLeNet won the ILSVRC 2014 achieving 6.67\% top-5 error on ImageNet. We considered this netowrk in our work PERCHè HA OTTENUTO IMPROVMENT NOTEVOLE DALL'ANNO PRECEDENTE, QUINDI INTRODUCENDO INNOVAZIONE CHE EFFETTI AMENTE FUNZONAO.
+It is composed of 22 layers, with different innovations regarding the fully-connected layers, the vanishing gradient problem and a new inception module.\\
 An interesting addition to the architecture is to change the second last fully-connected layer with an average pooling layer. This layer spatially averages the feature map, converting 7x7x1024 input to 1x1x1024, reducing the computation and the number of parameters, by a factor of 49. This average pooling layer is finally followed by a normal fully-connected layer with 1000 neurons (and 1024x1000 parameters), for the 1000 ImageNet classes.
 During training, to address the vanishing gradient problem, special extra structures are added to the network (these are removed during testing). These are auxiliary classifiers attached to intermediate layers. All the losses from each classifier gets added up, taking contribution from the auxiliary classifier lower
 than the main one, during training. The gradient from the main classifier which would have otherwise become very small, and thus slowing training, by time it reached the lower initial layers, receives gradient from the auxiliary classifiers and thus the net gradient becomes big enough to allow training to progress.
@@ -146,13 +151,44 @@ A method to reduce the number of computation is dimensionality reduction. This i
 
 
 \subparagraph{ResNeXt}
-ResNeXt was the first runner up in ILSVRC 2016, achieving 3.03\% top-5 error rate, superando la precisione umana.
-Si tratta di una cnn residual, ossia presenta i cosiddetti residual block, (spiegazione residual).
-The model name, ResNeXt, contains Next. It means the next dimension, on top of the ResNet, ossia la CNN vincitrice del  ILSVRC 2015. \\
-This next dimension is called the “cardinality” dimension.
-SPIEGARE NUOVO BLOCCO CON RIFERIMENTO A CARDINALITA
+ResNeXt \cite{resnext} was the first runner up in ILSVRC 2016, achieving 3.03\% top-5 error rate, better than human precision on the same dataset (5,1\% error).The model name, ResNeXt, contains Next. It means the next dimension, on top of the ResNet, namely the winner in ILSVRC 2015. This next dimension is called the “cardinality” dimension.\\
+The architecture adopts VGG/ResNets’ strategy of repeating layers, while
+exploiting the split-transform-merge strategy (for example inception modules have the same approch, that is, input is split into a few lower-dimensional embeddings, transformed by a set of specialized filters, and merged by concatenation). 
+A module in this network performs a set of transformations, each on a low-dimensional embedding, whose outputs are aggregated by summation. The transformations to be aggregated are all of the same topology (Figure \ref{fig:resnext_block} (right)).\\
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/resnext}
+	\caption{Left: A block of ResNet. Right: A block of ResNeXt with cardinality=32. A layer is shown as (\# in channels, filter size, \# out channels)}
+	\label{fig:resnext_block}
+\end{figure}
+
+Experiments in \cite{resnext} demonstrate that increasing cardinality (the size of the set of transformations) is a more effective way of gaining accuracy than going deeper or wider, especially when depth and width starts to give diminishing returns for existing models.\\
+In our work we use ResNeXt-50 32$\times$4d (Figure \ref{fig:res}), that represents a network with four bottleneck, and each layer having cardinality of 32. 
+
+\begin{figure}
+	\centering
+	\includegraphics[height=0.4\linewidth]{image/res}
+	\caption{ResNeXt-50 (32$\times$4)'s architecture}
+	\label{fig:res}
+\end{figure}
+
 
 \section{Experiments}
+
+
+\begin{table}[]
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		\multicolumn{5}{|c|}{\textbf{Training from scratch}}                                                          \\ \hline
+		\multirow{2}{*}{\textbf{Network}} & \multicolumn{2}{c|}{\textbf{Top-1}} & \multicolumn{2}{c|}{\textbf{Top-3}} \\ \cline{2-5} 
+		& Train acc        & Test acc         & Train acc        & Test acc         \\ \hline
+		AlexNet                           & 0.23103          & 0.27439          & 0.46159          & 0.51304          \\ \hline
+		GoogLeNet                         & 0.42669          & 0.46956          & 0.68285          & 0.70628          \\ \hline
+		ResNeXt-50                        & \textbf{0.50531} & \textbf{0.50048} & \textbf{0.74275} & \textbf{0.74782} \\ \hline
+		ResNet-18 ref                     & 0,516            & 0,511            & 0,737            & 0,710            \\ \hline
+	\end{tabular}
+\end{table}
 
 \paragraph{Setup}
 
@@ -185,6 +221,11 @@ SPIEGARE NUOVO BLOCCO CON RIFERIMENTO A CARDINALITA
 	\bibitem{dropout}
 	G. E. Hinton, N. Srivastava, A. Krizhevsky, I. Sutskever and R. R. Salakhutdinov.
 	Improving neural networks by preventing co-adaptation of feature detectors. 2012
+	
+	\bibitem{resnext}
+	Saining Xie, Ross Girshick, Piotr Dollar, Zhuowen Tu, Kaiming He, UC San Diego, Facebook AI Research
+
+	Aggregated Residual Transformations for Deep Neural Network. 2017
 	
 \end{thebibliography}
 
