@@ -184,7 +184,7 @@ A module in this network performs a set of transformations, each on a low-dimens
 	\label{fig:resnext_block}
 \end{figure}
 
-Experiments in \cite{resnext} demonstrate that increasing cardinality (the size of the set of transformations) is a more effective way of gaining accuracy than going deeper or wider, especially when depth and width starts to give diminishing returns for existing models.\\
+Experiments in \cite{resneXt} demonstrate that increasing cardinality (the size of the set of transformations) is a more effective way of gaining accuracy than going deeper or wider, especially when depth and width starts to give diminishing returns for existing models.\\
 In our work we use ResNeXt-50 32$\times$4d (Figure \ref{fig:res}), that represents a network with four bottleneck, and each layer having cardinality of 32. 
 
 \begin{figure}
@@ -221,8 +221,16 @@ The training of the models and the experiments were performed on a virtual machi
 
 \subsection{Implementation Details}\label{ImplDet}
 
-For each CNN, we tested their performance for different learning rate values ($10^{-2}, 10^{-3}, 10^{-4}, 10^{-5}$). We have observed that $10^{-3}$ is the value which allows to converge faster to the best results, thus all experiments shown use this learning rate value.\\
-In table \textbf{??} we report ResNeXt 's performance on all those values.
+For each CNN, we tested their performance with different learning rate values ($10^{-2}, 10^{-3}, 10^{-4}, 10^{-5}$). We have observed that $10^{-3}$ is the value which allows to converge faster to the best results, thus all experiments we have performed use this learning rate.\\
+In figure \ref{fig:lr} we report ResNeXt's performance based on these different values, where it's clear that the lowest value of learning rate slows down the training phase, instead higher values ($10^{-2}$) bring more instability in the accuracy trend.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=.5\textwidth]{graphs/lr_scratch}\hfill
+	\includegraphics[width=.5\textwidth]{graphs/lr_tl}
+	\caption{Top-1 accuracies for ResNeXt's validation set}
+	\label{fig:lr}
+\end{figure}
 
 We chose the Adam's update rule because the experiments using SGD were worse. \textbf{Abbiamo impostato il }learning rate $= 10^{-3}$ mentre per gli altri papametri we used the default ones, i.e. $\beta_{1}  = 0.9$ and $\beta_{2} = 0.999$.  \textbf{MA COSA SONO beta1 e BETA2}\\
 
@@ -243,7 +251,9 @@ The most significant results are reported in \ref{results}.
 
 \subsection{Results}\label{results}
 
-In table \textbf{??} we report the overall results obtained for each CNN, both as regards training with transfer learning and the one from scratch, including in it the results obtained in \cite{ArtistIdCNN406} and \textbf{altri.}...
+\textbf{RESNET SI SATURA PRIMA DI RESNEXT}
+
+In table \ref{table} we report the overall results obtained for each CNN, both as regards training with transfer learning and the one from scratch, including in it the results obtained in \cite{ArtistIdCNN406} and \textbf{altri.}...
 
 The first thing with we see, comparing the CNNs, is that AlexNet's performance are much worse than other CNNs for all experiments, thus we can deduce how network's complexity allows to achieve better results. In fact, GoogLeNet and ResNeXt are successors of AlexNet, so this results should not be surprising. 
 In particular, in training from scratch, AlexNet is 20 percentage points worse than others CNNs, and in training with transfer learning this distance is halved. This result show that transfer learning performs very well in order to achieve discreet results even with not so complex networks. Indeed, AlexNet has obtained 87\% of top-3 accuracy in the test set.
@@ -298,6 +308,7 @@ Moreover, we can see that GoogLeNet and ResNeXt, aftew roughly 10 epochs, are af
 		ResNeXt-50                        & \textbf{0.92125} & \textbf{0.82318} & \textbf{0.98695}  & \textbf{0.94879} \\ \hline
 		ResNet-18 \cite{ArtistIdCNN406}                    & 0.907            & 0.777             & 0.973             & 0.898           \\ \hline
 	\end{tabular}
+	\label{table}
 \end{table}
 
 
@@ -344,7 +355,11 @@ Moreover, we can see that GoogLeNet and ResNeXt, aftew roughly 10 epochs, are af
 	
 \end{figure}
 
-\section{Conclusions}\label{conclusions}
+\section{Conclusions and future works}\label{conclusions}
+In this essay we present the methods and approaches we have exploited to deal with artist identification. Once again we mark that it's a complex task, without lot of previous works. 
+In our work we were able to reach a top-1 final accuracy of 82\% using ResNeXt with transfer learning, pre-trained on ImageNet, outperforming traditional feature-based approaches by a significant margin\textbf{ I REALTED WORK SU QUESTO TASK O SIMILI. FORSE DA AGGIUNGERE RESNEXT FROM SCRATCH.}. From these results we think that a larger dataset, both for number of paintings and artists, would grant a significantly increment in accuracy, particularly in training from scratch.
+
+In future work we would like to deal with a task that could be considered related to this, namely the recognition of forgeries in art, starting from our work. Our belief is that the representation of style and content crated by our networks would be a good starting point to create a system able to assign a value of authenticity to a painting, because we think that, though is possible to replicate precisely an artifact, the style of an artist is somehow unique and possibly captured by a CNN.
 
 %%% Comment out this section when you \bibliography{references} is enabled.
 \begin{thebibliography}{1}
