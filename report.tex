@@ -53,67 +53,66 @@ Università di Padova \\
 \begin{abstract}
 	\textit{In this essay we present our work for the project of the Cognitive Services course.
 	The problem we face is the artist identification, that is being able to recognize the author of a painting, given an image of it. Our dataset consists of about 10.000 paintings of 23 different artists.
-	In order to resolve this task, we have exploited some famous Convolutional Neural Networks (CNNs), i.e. AlexNet, GoogLeNet and ResNeXt, that come with \textit{Pytorch} library. Those networks have been trained according to two distinct approaches: training them from scratch or exploiting pre-trained models using transfer learning technique. We used \textit{Google Cloud Platform} to train and evaluate our models.\\
-	What we have achieved is a set of results which are in line with the state-of-the-art, confirming that CNNs are suitable to solve this type of task.}
+	In order to resolve this task, we have exploited some famous Convolutional Neural Networks (CNNs), i.e. AlexNet, GoogLeNet and ResNeXt, that come with \textit{Pytorch} library. Those networks have been trained according to two distinct approaches: training them from scratch or exploiting pre-trained models using transfer learning technique. We used a virtual machine (VM) hosted by \textit{Google Cloud Platform} to perform our experiments.\\
+	\textbf{What we have achieved is a set of results which are in line with the state-of-the-art, confirming that CNNs are suitable to solve this type of task.}}
 \end{abstract}
 
 
 % keywords can be removed
-\keywords{Convolutional Neural Networks \and Artist Identification \and CNNs \and ResNeXt \and GoogLeNet \and AlexNet \and Transfer Learning}
+\keywords{Convolutional Neural Network \and Artist Identification  \and ResNeXt \and GoogLeNet \and AlexNet \and Transfer Learning}
 
 
 \section{Introduction}
-Artist identification is a task regarding recognition of the painter who depicted a certain painting, given an image of it.\\
-It's still nowadays a difficult problem to solve, for the following reasons:
+Artist identification is the task of recognizing the author of a painting given only an image of it, without any other information about it. It's still nowadays a difficult problem to solve, for the following reasons:
 \begin{itemize}
-	\item there are not many contributions yet and these rely on the latest models of deep learning (e.g. CNNs);  \textbf{SISTEMARE, USANO APPROCCI VECCHI}
-	\item the available datasets are not as large as those used by models which solve more common tasks, such as image classification;
-	\item an artist's style can change a lot through his works, or it could be influenced by other painters. \textbf{QUESTO RENDE LA CLASSIFICAZIONE UN TASK PARTICOLARMENTE COMPLICATO}
+	\item there are not many contributions in the state-of-the-art, moreover the majority of them regards style identification and rely on old deep learning approaches;
+	\item the available datasets are not as large as those used by models which solve more common tasks, such as image classification (e.g. Imagenet \cite{imagenet});
+	\item artist's style could change a lot through his works, or it could be influenced by other painters. Therefore it's clear how much is complicated to \textbf{classify correctly} a painting. 
 \end{itemize}
-This type of task is still done by art experts and contributions to this type of problem can help and lead to the development of automatic fake artifact detection and automatic cataloguing of artworks.\\
-We used three different CNNs: AlexNet (2012), GoogLeNet (2014) and ResNeXt (2016). For each of them, we have established two different ways of training: from scratch and with transfer learning  upon pre-trained version of such CNNs. Then we have observed and compared their performance. From our experiment we have obtained 83.768\% accuracy.\\
+Usually this task is done by human experts because of its difficulty, so our contribution can help to automatize the catalogation of artworks, which is more and more important due to the increasing number of  digital archives. In addition, our work could be useful in art forgeries detection.\\
+Our approach involves 3 different CNNs, AlexNet (\cite{alexnet}), GoogLeNet (\cite{googlenet}) and ResNeXt (\cite{resneXt}), trained from scratch and with transfer learning in order to compare these opposite techniques. Our experiments \textbf{produced} a top-1 accuracy of 82\%  and a top-3 accuracy of 92\% as best result.\\
 
 
-The rest of the essay is structured as follows: In section \ref{relwor} we discuss  similarities and differences between previous works and ours. In section \ref{dataset} we explain which dataset we have used, how it was formed and which preprocessing and data augmentation techniques we have exploited. In section\ref{method} we exhibit the CNNs' architectures and how we have trained them. In section \ref{experiments} we show some details regarding the \textit{GCloud Compute Engine}'s configuration, the metrics used to assess the goodness of the models and the detailed results of this experiment. Finally, in section \ref{conclusions} we draw some conclusion and we outline some possibile future works which rely on our result.
+The rest of the essay is structured as follows: in section \ref{relwor} we discuss  similarities and differences between previous works and ours. In section \ref{dataset} we explain the dataset we have used, how it was created and which preprocessing and data augmentation techniques we have exploited. In section\ref{method}
+we discuss our approach for solving the problem we have just described. In \ref{experiments} we show some details regarding the \textit{GCloud Compute Engine}'s configuration, the metrics used to evaluate the goodness of the models and the detailed results of our experiments. Finally, in section \ref{conclusions} we draw some conclusion and we outline some possibile future works which rely on our result.
 
 
 \section{Related Works}\label{relwor}
 
-In this section we show some previous works related to ours. In addition to defining the references our experiment, the following should further convince the reader of present-day difficulty in achieving good precision in artist identification.\\
-Recently CNNs have become widespread, this is due to the good performance and results obtained in this kind of task. In fact, we can distinguish the contributions to this task between those that come before the spreading of the CNNs, and thus do not use them, and those that instead benefit from it.\\
-In our problem, the features that characterize an artist's style can be many and difficult to engineer, such as texture, shape, color, tone, variety, proportion, pattern and brush strokes.\\
-Instead, it is well known that CNNs are able to learn those features that characterize an image, without having to identify and engineer a set of characterizing features.\\
-In works prior to CNNs, some famous approaches of detection features are exploited, such as Scale Invariant Feature Transforms (SIFT) and Histograms of oriented gradients (HOG) (\cite{Saleh2015}, \cite{mensink2014}, \cite{lombardi05}, \cite{jou2011}). These works have in common the use of an SVM 1-vs-rest classifier, except \cite{jou2011} which uses both SVM 1-vs-rest and Naïve Bayes classifier.\\ However, \cite{lombardi05} and \cite{jou2011} face the problem of style recognition, which is different than artist identification.\\
-In addition, some of these perform on small or not so heterogenous datasets, such as \cite{mensink2014} which uses the artwork of a single museum, or \cite{jou2011} which focuses on only 5 artists. Instead, in our work we focus on recognizing 23 different artists, and for each of them we take the same number of artifacts (\cite{ArtGANDataset}). \\
+In this section we show some previous works related to ours. In addition to define the references of our experiments, the following should further convince the reader of present-day difficulty in achieving good precision in artist identification.\\
+Recently CNNs have become widespread, because of the good performance and results obtained in tasks regarding visual recognition.
+Previous works not regarding CNNs use some famous approaches of features detection, such as Scale Invariant Feature Transforms (SIFT) and Histograms of oriented gradients (HOG) (\cite{Saleh2015}, \cite{mensink2014}, \cite{lombardi05}, \cite{jou2011}), to extract some particular characteristics of the painting useful for its classification. These works have in common the use of an SVM 1-vs-rest classifier, except \cite{jou2011} which uses both SVM 1-vs-rest and Naïve Bayes classifier. However, \cite{lombardi05} and \cite{jou2011} face up the problem of style recognition, which is different than artist identification, but using similar approaches.\\
+In addition, some of these perform on small or not so heterogenous datasets, such as \cite{mensink2014} which uses the artwork of a single museum, or \cite{jou2011} which focuses on only 5 artists. Instead, in our work we set our sights on recognizing 23 different artists, with 450 paintings for each of them as our dataset. \\
+In any case, these techniques are known to be not so effective due to the fact that features characterizing an artist's style can be many and difficult to engineer, such as texture, shape, color, tone, variety, proportion, pattern and brush strokes.\\
 
-One of the results achieved in \cite{hong2017} shows the actual improvement of performance in the use of CNNs up to 13.6\% more than SIFT, HOG or similar.  This work aims to detect artwork that violates copyright terms in television programs, TV series, movies or similar scenarios. They use different techniques to distort the images on their dataset, which would not be suitable for our context. They experiment with three different CNNs inspired by AlexNet and VGG, then they trained them from scratch with a weights' initialization according to a Gaussian distribution. In our work, instead, we use pre-existing CNNs. \cite{hong2017} is one of the few works which does not use SVM as classifier, but 3 Fully Connected Layers, and the last of them is a Soft-Max layer.\\
+One of the results achieved in \cite{hong2017} shows an improvement of performance using CNNs up to 13.6 percentage points more than SIFT, HOG or similar.  This work aims to detect artwork that violates copyright terms in television programs, TV series, movies or similar scenarios. They use different techniques to distort the images on their dataset in order to simulate potential situation that it would be appeared on TV programs or photographs or
+movies. This is not suitable for our context because distortion would be harmful for artist identification.\\
+They have experimented 3 different CNNs inspired by AlexNet and VGG, training them from scratch with a weights initialization according to a Gaussian distribution, instead, in our work, we use pre-existing CNNs without modifying their architectures. \cite{hong2017} is one of the few works which does not use SVM as classifier, but 3 fully connected layers with softmax classifier.\\
 Other works like \cite{Bar2014} and \cite{razavian2014} use a CNN to generate features, then use an SVM 1-vs-rest classifier on top of it.
-\cite{ArtistIdCNN406} exploit one of the most recent CNNs: ResNet-18 (\cite{resnet}). It is an ancestor of ResNeXt (\cite{resneXt}), one of the CNNs used in our experiment. As in our work, also in \cite{ArtistIdCNN406} either training from scratch and training through transfer learning are studied.
+\cite{ArtistIdCNN406} exploit one of the most recent CNNs, i.e. ResNet (\cite{resnet}). It is an ancestor of ResNeXt (\cite{resneXt}), one of the CNNs used in our experiment. In \cite{ArtistIdCNN406} either training from scratch and training through transfer learning are studied,  as in our work.
 \\
 
-In the latest years, the number of CNNs for visual recognition task is growing, as well as their contributions in the field of computer vision. What is missing is a performance comparison between the latter models in the field of artist identification and, more generally, in art-recognition tasks. This comparison is the purpose of our work.
+In the latest years, the number of CNNs for visual recognition is growing, as well as their contributions in the field of computer vision. Instead of hand-crafting features, CNNs are able to learn features representation of an image, making easier and more accurate this kind of task. What is missing is a performance comparison between the latter models in the field of artist identification and, more generally, in art-recognition tasks. This comparison is the purpose of our work.
 
 
 \section{Dataset}\label{dataset}
 \subsection{Overview}\mbox{}\\
-The first requirement to train a CNN for artist identification is a dataset, of paintings of different artist, as large as possible. For our project we obtain a dataset from \cite{ArtGANDataset}, which is a subset of the WikiArt Dataset. \\
-The dataset contain about 19,000 images of 23 different artists, regarding very different styles, genres  and epochs. There are also three .csv files that labeled all the paintings for genre, style, and artist: for our work we have used only the last one.\\ \\
-In order to obtain a balanced dataset, we decided to select randomly 450 paintings for each artist, so in the end our dataset consists of 10,350 total images. \\
-The next step was to divied the entire dataset in training, validation and test set. \cite{ArtGANDataset} suggests a possibile partition, but we decided to create our own because there isn't a test set in their repository, and some paintings included in the training set are also in the validation set, 
-fact that can create a distorted evaluation of our model during training. Therefore, we split the dataset in training, validation and test sets using a 80-10-10 division per artist, obtaining a training set of 360 paintings per artist, and a validation and test sets each of 45 paintings per artist.
+The first requirement to train a CNN for artist identification is a dataset, concerning paintings of different artist, as large as possible. For our project we obtain a dataset from \cite{ArtGANDataset}, which is a subset of the WikiArt Dataset. \\
+The dataset contains about 19,000 images of 23 different artists, regarding very different styles, genres  and epochs. There are also 3 \textit{.csv} files that labelled all the paintings for genre, style, and artist: for our work we have used only the last one. In order to obtain a balanced dataset, we decided to randomly select 450 paintings for each artist, so in the end our dataset contains of 10,350 total images. \\
+The next step was to divided the entire dataset in training, validation and test sets. \cite{ArtGANDataset} suggests a possibile partitioning, but we decided to create our own because they did not provide a test set, and some paintings included in the training set are also in the validation set, fact that could create a distorted evaluation of our model during training. Therefore, we split the dataset in training, validation and test sets using a 80-10-10 division per artist, obtaining a training set of 360 paintings per artist, and a validation and test sets each of 45 paintings per artist.
 
 \subsection{Preprocessing and Data augmentation}\mbox{}\\
-CNNs require a precise size for the images passed in it, so we had to modify the paintings in the dataset, considering that they vary widely in shape and size.\\
+CNNs require a precise size for their input images, so we had to modify the paintings in the dataset, considering that they vary widely in shape and size.\\
 So, first, we take a 224$\times$224 crop of each input images, next we zero-center and normalize them, with mean and standard deviation calculated for each of the three channels red, green and blue (they are RGB images).  \\
 During training we also randomly horizontally flip the image with a probability of 50\%, and also take a random crop of it (not always the central pixels), for essentialy two reasons:
 \begin{itemize}
 	\item randomness create variety and can avoid overfit;
 	\item we assumed that the style of an artist is present everywhere in the painting, so taking random crops do not influence the performance of our models.
 \end{itemize}
-Instead, for validation and test sets we always have taken a central crop, in order to obtain stable results not depending on crop position.
+Instead, for validation and test sets we always have taken a central crop, in order to obtain stable results comparable between different epochs.
 
 \section{Method}\label{method}
-In our work we have considered three different CNNs: AlexNet, GoogLeNet and ResNeXt. Every network we use takes as input a
+In our work we have considered three different CNNs: AlexNet, GoogLeNet and ResNeXt. Every network takes as input a
 3$\times$224$\times$224 RGB image and outputs the scores for each of the 23 artists present in our dataset.
 \\
 For all of our networks, we use a softmax classifier with
@@ -123,17 +122,17 @@ L_{i}=-\log \left(\frac{e^{f_{y_{i}}}}{\sum_{j} e^{f_{j}}}\right)
 \end{equation}
 \textbf{SPIEGARE}
 
-First, we have trained the networks from scratch, in order to allow the network to learn features solely for our specific task of artist identification. \\
-Afterwards, starting from networks with weights pre-trained on ImageNet dataset, we trained them using transfer learning to understand if a feature representation from ImageNet is a valuable starting point for our problem.\\
-In both approches, we replaced the last fully-connected layer of the CNNs with a new one to calculate a score for each artist in
+First, we have trained the networks from scratch, in order to allow them to learn features solely for artist identification. \\
+Afterwards, starting from networks with weights pre-trained on ImageNet dataset, we trained them using transfer learning to understand if a features representation from ImageNet is a valuable starting point for our problem.\\
+In both approaches, we replaced the last fully-connected layer of the CNNs with a new one to calculate a score for each artist in
 our dataset. We used \cite{pytorchguide} as a guide for replacing the fully-connected layer, and for performing transfer learning on the pre-trained networks.
 
 \subsection{AlexNet}
-AlexNet was the winning entry in ILSVRC 2012. It solves the problem of image classification where the input is an image of one of 1000 different classes (e.g. cats, dogs etc.) and the output is a vector of 1000 numbers, achieving a top-5 error of 15,8\%.
-Architecture (Figure \ref{fig:alexnet}) is made up of eight layers, five convolutional, some of them followed by max pooling layers, and three fully-connected, with ReLU as activation function.\\
-AlexNet also uses dropout, introduced in 2012 in \cite{dropout}, to reduce overfitting. In dropout, a neuron is dropped from the network with a probability of 0.5. When a neuron is dropped, it does not contribute to either forward or backward propagation. 
+AlexNet (\cite{alexnet}) was the winning entry in ILSVRC 2012. It solves the problem of image classification where the input is an image of one of 1000 different classes (e.g. cats, dogs etc.) and the output is a vector of 1000 numbers, achieving a top-5 error of 15.8\%.
+Architecture (Figure \ref{fig:alexnet}) is made up of 8 layers, 5 convolutional, some of them followed by max pooling layers, and 3 fully-connected, with ReLU as activation function.\\
+AlexNet also uses dropout (\cite{dropout}) to reduce overfitting. In this strategy, a neuron is dropped from the network with a probability of 50\%. When a neuron is dropped, it does not contribute to either forward or backward propagation. 
 As a result, the learnt weight parameters are more robust and do not get overfitted easily.\\
-We decided to include AlexNet in our work because it represent the starting point of image classification with CNN, so it would be iteresting to compare its performance on our task with more recent, complex and deep networks.
+We decided to include AlexNet in our work because it represent the most important starting point of image classification with CNN, so it would be interesting to compare its performance on our task with more recent, complex and deep networks.
 
 \begin{figure}[h]
 	\centering
@@ -143,7 +142,7 @@ We decided to include AlexNet in our work because it represent the starting poin
 \end{figure}
 
 \subsection{GoogLeNet}
-GoogLeNet won the ILSVRC 2014 achieving 6.67\% top-5 error on ImageNet. We considered this netowrk in our work PERCHè HA OTTENUTO IMPROVMENT NOTEVOLE DALL'ANNO PRECEDENTE, QUINDI INTRODUCENDO INNOVAZIONE CHE EFFETTI AMENTE FUNZONAO.
+GoogLeNet (\cite{googlenet}) won the ILSVRC 2014 achieving 6.67\% top-5 error on ImageNet. We considered this netowrk in our work PERCHè HA OTTENUTO IMPROVMENT NOTEVOLE DALL'ANNO PRECEDENTE, QUINDI INTRODUCENDO INNOVAZIONE CHE EFFETTI AMENTE FUNZONAO.
 It is composed of 22 layers, with different innovations regarding the fully-connected layers, the vanishing gradient problem and a new inception module.\\
 An interesting addition to the architecture is to change the second last fully-connected layer with an average pooling layer. This layer spatially averages the feature map, converting 7x7x1024 input to 1x1x1024, reducing the computation and the number of parameters, by a factor of 49. This average pooling layer is finally followed by a normal fully-connected layer with 1000 neurons (and 1024x1000 parameters), for the 1000 ImageNet classes.
 During training, to address the vanishing gradient problem, special extra structures are added to the network (these are removed during testing). These are auxiliary classifiers attached to intermediate layers. All the losses from each classifier gets added up, taking contribution from the auxiliary classifier lower
@@ -156,10 +155,9 @@ than the main one, during training. The gradient from the main classifier which 
 \end{figure}
 
 \subparagraph{Inception module}\mbox{}\\
-Inception modules are used in GoogLeNet to allow for more efficient computation through a dimensionality reduction with stacked 1x1 convolutions. The modules were designed to solve the problem of computational expense, as well as overfitting, among other issues. The solution, in short, is to take multiple kernel filter sizes within the CNN, and rather than stacking them sequentially, ordering them to operate on the same level. 
-
-As a neural net deals with a vast array of images, with wide variation in the featured image content, also known as the salient parts, they need to be designed appropriately. The most simplified version of an inception module works by performing a convolution on an input with not one, but three different sizes of filters (1x1, 3x3, 5x5). Also, max pooling is performed. Then, the resulting outputs are concatenated and sent to the next layer.
-A method to reduce the number of computation is dimensionality reduction. This involves convolutions with 1x1 filters before convolutions with bigger filters.
+The Inception modules were designed to solve the problem of computational expense, as well as overfitting, among other issues. The solution, in short, is to take multiple filter sizes within the CNN, and rather than stacking them sequentially, ordering them to operate on the same level. \\
+ The most simplified version of an inception module works by performing a convolution on an input with not one, but three different sizes of filters (1x1, 3x3, 5x5). Also, max pooling is performed. Then, the resulting outputs are concatenated and sent to the next layer.
+A method to reduce the number of computation is dimensionality reduction. This involves convolutions with 1x1 filters before convolutions with bigger filters (figure \ref{fig:incmodule}).
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.7\linewidth]{image/inc_module}
@@ -171,8 +169,8 @@ A method to reduce the number of computation is dimensionality reduction. This i
 
 
 \subparagraph{ResNeXt}
-ResNeXt \cite{resnext} was the first runner up in ILSVRC 2016, achieving 3.03\% top-5 error rate, better than human precision on the same dataset (5,1\% error).The model name, ResNeXt, contains Next. It means the next dimension, on top of the ResNet, namely the winner in ILSVRC 2015. This next dimension is called the “cardinality” dimension.\\
-The architecture adopts VGG/ResNets’ strategy of repeating layers, while
+ResNeXt (\cite{resneXt})was the first runner up in ILSVRC 2016, achieving 3.03\% top-5 error rate, which is a better result than human precision on the same dataset (5.1\% error). The model's name, ResNeXt, contains Next. It means the next dimension, on top of the ResNet, namely the winner in ILSVRC 2015. This next dimension is called the “cardinality” dimension.\\
+The architecture adopts VGG/ResNets' strategy of repeating layers, while
 exploiting the split-transform-merge strategy (for example inception modules have the same approch, that is, input is split into a few lower-dimensional embeddings, transformed by a set of specialized filters, and merged by concatenation). 
 A module in this network performs a set of transformations, each on a low-dimensional embedding, whose outputs are aggregated by summation. The transformations to be aggregated are all of the same topology (Figure \ref{fig:resnext_block} (right)).\\
 
@@ -195,8 +193,8 @@ In our work we use ResNeXt-50 32$\times$4d (Figure \ref{fig:res}), that represen
 \section{Experiments}\label{experiments}
 
 \subsection{Setup}
-Both the built models and the experiments have been implemented in Pytorch (\cite{pytorch}). The reason why we chose this library is because of the presence of models, pretrained and not, that we wanted to study.\\
-The training of the models and the experiments were performed on a virtual machine (VM) hosted by \textit{Compute Engine}, one of the services provided by Google Cloud Platform (\cite{gcloud}). Its configuration, shown in table \ref{table:specVM}, is a pre-setting provided by the service itself and designed for deep learning applications  (\cite{vmconfig}). The dataset was stored in a \textit{Google Cloud Storage}'s Bucket, another service provided by Google Cloud Platform.
+Both the built models and the experiments have been implemented in Pytorch (\cite{pytorch}). The reason why we chose this library is because of the presence of models, pre-trained and not, that we wanted to study.\\
+The training of the models and the experiments were performed on a virtual machine hosted by \textit{Compute Engine}, one of the services provided by Google Cloud Platform (\cite{gcloud}). Its configuration, shown in table \ref{table:specVM}, is a pre-setting provided by the service itself and designed for deep learning applications  (\cite{vmconfig}). The dataset was stored in a \textit{Google Cloud Storage}'s bucket, another service provided by Google Cloud Platform.
 
 \begin{table}
 	\centering
@@ -231,50 +229,49 @@ In figure \ref{fig:lr} we report ResNeXt's performance based on these different 
 	\label{fig:lr}
 \end{figure}
 
-We chose the Adam's update rule because the experiments using SGD were worse. \textbf{Abbiamo impostato il }learning rate $= 10^{-3}$ mentre per gli altri papametri we used the default ones, i.e. $\beta_{1}  = 0.9$ and $\beta_{2} = 0.999$.  \textbf{MA COSA SONO beta1 e BETA2}\\
+\textbf{We chose the Adam's update rule because the experiments using SGD were worse. \textbf{Abbiamo impostato il }learning rate $= 10^{-3}$ mentre per gli altri papametri we used the default ones, i.e. $\beta_{1}  = 0.9$ and $\beta_{2} = 0.999$.  \textbf{MA COSA SONO beta1 e BETA2}}\\
 
-In transfer learning training, we set the number of epochs and the batch size to 16 and 32 respectively.  For each model chosen, pytorch makes available the final weights of these models trained on the ImageNet dataset (\cite{imagenet}), which makes transfer learning very easy to exploit.\\
-We first start training the network updating the weights only in the FC-layers, but the results obtained weren't good.\\
-With the aim of achieving higher accuracy, as experimented in \cite{ArtistIdCNN406}, we have decided to allow the update of the weights in the whole network if, for 3 consecutive epochs, the validation set's accuracy does not improve by 3 percentage points. When this condition occurs, learning rate is decreased by a factor of 10. This strong decrease is motivated by the fundamental idea in using transfer learning: it is assumed that the pre-trained weights are already "close" or enough good to those we are looking for, so it is good to search for them with a relatively small step-size.
-\\
+In transfer learning training, we set respectively the number of epochs and batch size to 16 and 32.  For each model chosen, pytorch makes available their final weights  trained on the ImageNet dataset (\cite{imagenet}), which makes transfer learning very easy to implement.\\
+We first start training the network updating the weights only in the FC-layers, but the results obtained were not satisfactory.\\
+With the aim of achieving higher accuracy, as experimented in \cite{ArtistIdCNN406}, we have decided to allow the update of the weights in the whole network when, for 3 consecutive epochs, the validation set's accuracy does not improve by 3 percentage points. When this condition occurs, learning rate is decreased by a factor of 10. This strong decrease is motivated by the hypothesis  that pre-trained weights are already "close" to those we are looking for, so it is good to update them with a smaller step-size.
 
-In training from scratch, the number of epochs was set to 21, while the batch size was still 32.\\ 
-Weights' nitialisation follows a uniform distribution in $[-x, x]$ where $x=1/\sqrt n$ and $n$ is the number of inputs to a given neuron (\textbf{STA COSA È DA VERIFICARE})\\
+In training from scratch, the number of epochs is set to 20, while the batch size is still 32.\\ 
+Initialisation of the weights follows a uniform distribution in $[-x, x]$ where $x=1/\sqrt n$ and $n$ is the number of inputs to a given neuron (\textbf{STA COSA È DA VERIFICARE})\\
 We have experimented what in pytorch is called \textit{scheduler}, i.e. every 7 epochs the learning rate is decreased by a factor of 10 . This strategy, however, has not led to improvements and in fact the results exposed have been obtained without the use of this technique.
 
 \subsection{Evaluation metrics}
-In order to evaluate all the models that we study, we calculated their top-1 accuracy, which is when a paint is classified with its author, and top-3 accuracy, aka a paint is classified correctly when its author is one of the 3 artist to whom the model has assigned the highest scores.\\
-Finally, we have compared our results with those in \textbf{CIT??}, which is/are the most related works with ours. 
+In order to evaluate all the models that we study, we have calculated the accuracy on training and validation sets for each epochs during training, and the final accuracy on test set using the best weights resulted from training. The accuracy is intended as top-1, i.e.  the fraction of paintings whose artists are identify correctly, and top-3, i.e. the fraction of paintings whose artists are included in the 3 to whom the model has assigned the highest score.
 
+Finally, we have compared our results with those in \textbf{CIT??}, which is/are the most related works with ours. 
 The most significant results are reported in \ref{results}.
 
 \subsection{Results}\label{results}
 
 \textbf{RESNET SI SATURA PRIMA DI RESNEXT}
 
-In table \ref{table} we report the overall results obtained for each CNN, both as regards training with transfer learning and the one from scratch, including in it the results obtained in \cite{ArtistIdCNN406} and \textbf{altri.}...
+In table \ref{table} we report the overall results obtained with training  from scratch and transfer learning for each CNN, including also the results obtained in \cite{ArtistIdCNN406} and \textbf{altri.}...
 
-The first thing with we see, comparing the CNNs, is that AlexNet's performance are much worse than other CNNs for all experiments, thus we can deduce how network's complexity allows to achieve better results. In fact, GoogLeNet and ResNeXt are successors of AlexNet, so this results should not be surprising. 
-In particular, in training from scratch, AlexNet is 20 percentage points worse than others CNNs, and in training with transfer learning this distance is halved. This result show that transfer learning performs very well in order to achieve discreet results even with not so complex networks. Indeed, AlexNet has obtained 87\% of top-3 accuracy in the test set.
+The first thing we observe, comparing the CNNs, is that AlexNet's performances are much worse than other CNNs for all experiments, thus we can deduce how network's complexity allows to achieve better results. In fact, GoogLeNet and ResNeXt are successors of AlexNet, so this outcome should not be surprising. 
+In particular, in training from scratch, AlexNet is 20 percentage points worse than others CNNs, while in training with transfer learning this distance is halved. This result shows that transfer learning performs very well in order to achieve quite good accuracy, even with not so complex networks. Indeed, AlexNet has obtained 87\% of top-3 accuracy in the test set.
 
-For all the networks, we can see how training with transfer learning achieved results with 40 percentage points more than training from scratch. So, we can figure out that CNNs already trained on ImageNet dataset, which is wider than ours,  are a valuable starting point for artist identification and thus image classification and artist identification are tasks at least partially overlapped. \textbf{da riguardare}\\
-The most performing CNN is ResNeXt trained with transfer learning. Its top-1 accuracy reaches 80\% on test set, while its top-3 accuracy is roughly 93\%. This mean that it can narrow down the artist to three in the vast majority of cases.
+For all the networks, we can see how training with transfer learning achieved results with 40 percentage points more than training from scratch. So, we can figure out that CNNs already trained on ImageNet dataset, which is wider than ours,  are a valuable starting point for artist identification\\
+The most performing CNN is ResNeXt trained with transfer learning. Its top-1 accuracy reaches 82\% on test set, while its top-3 accuracy is roughly 94\%. This mean that it can narrow down the artist to three in the vast majority of cases.
 
-Figure \ref{fig:confusion} shows the confusion matrix concerning ResNeXt's classification. Each row represents the true artist and each column represents a predicted artist. Ideally, we want as many predictions as possible to be concentrated on the diagonal as this means that the network correctly predicted the true artist. The maximum possible value for a cell in the confusion matrix is 45, since there are 45 paintings per artist in the dataset.\\
-In general, we can easily see how the majority of artifacts are well-classified thanks to the hottest colours on the diagonal cell, i.e. more than 30 paints are well classified to 45. \textbf{rivedere}
+Figure \ref{fig:confusion} shows the confusion matrix concerning our best network's classification on test set. Each row represents the true artist and each column represents the predicted one. Ideally, we want as many predictions as possible to be concentrated on the diagonal as this means that the network correctly predicted the true artist. The maximum possible value for a cell in the confusion matrix is 45, since there are 45 paintings per artist in the test set.\\
+In general, we can easily see how the majority of artifacts are well-classified thanks to the colours (from yellow to brown) on the diagonal cell, i.e. more than 30 painting for each artist are well classified.
 
-In particular, the artits better classified (44 to 45) are Eugene Bodin, Ivan Aivazovsky and Raphael Kirchner. In fact, even though these artists may belong to differents artistic movements and styles, they've always paints in a manner that depicts the world very close to reality (\textbf{figura ?? show some example}).\\
+In particular, the artits better classified (44 out of 45) are Eugene Bodin, Ivan Aivazovsky and Raphael Kirchner. In fact, even though these artists may belong to differents artistic movements and styles, their painting tends to represent the world very close to reality (\textbf{figura ?? show some example}).\\
 For example, Ivan Aivazovsky produced many portraits and landscapes, over half of all of his paintings are realistic depictions of coastal scenes and seascapes. \\
 The manner of painting real scenario or objects makes artist classification very similar to image classification. Indeed, form our results we note that artists with this characteristic obtained an higher accuracy.
 
 For the artists whose paints are often misclassified, we have noticed some common traits which follows.\\
 Some of them belong to movements such as surrealism, cubism or expressionism, thus their artifacts are not depicting real scenario (\textbf{esempi}), making them harder to classify.
-For example, Pablo Picasso, who founded the cubism movement, is the most misclassified artist (30 to 45).
+For example, Pablo Picasso, who founded the cubism movement, is the most misclassified artist (30 out of 45).
   
 The second reason leading to misclassification is the similarity  between different artists.\\
 The most striking example regards Ilya Repin, in fact the model has classified Boris Kustodiev as authors of 8 Repin's artworks. That's not so surprising since Repin was the Kustodiev's teacher, influencing significantly his style. (\textbf{example}).
 
-Another reason concerning artists whose produced paints with different style between them, as we can see in figure \textbf{REF} where Van Gogh's artworks are reported. This complicates furthermore the classification, leading to worse performance (accuracy on Van Gogh is 33 to 45).
+Another reason concerning artists whose produced paints with different style between them, as we can see in figure \textbf{REF} where Van Gogh's artworks are reported. This complicates furthermore the classification, leading to worse performance (accuracy on Van Gogh is 33 out of 45).
 
 In figure \ref{fig:accscratch}, for each CNN trained from scratch,  we report the top-1 accuracy trends on training and validation set. What we see is that both trends are very close each other, which proves a very low level of overfitting.
 From this fact, we deduce that with a wider dataset and an higher number of epochs, we could be obtained better performances. For this reason, we have decided to test once our best network for 30 epochs. We didn't extend this kind of experiment to all networks due to our Google Cloud's limit resources. As we expected, ResNeXt's accuracy trend \textbf{kept increasing } without introducing overfitting, reaching 59\% top-1 and 81\% top-3 accuracy on test set.
@@ -384,7 +381,7 @@ In future work we would like to deal with a task that could be considered relate
 	\newblock Artist Identification with Convolutional Neural Networks, \newblock 2017
 	
 	\bibitem{ArtGANDataset}
-	Dataset:
+	\textbf{Dataset:}
 	\url{https://github.com/cs-chan/ArtGAN/tree/master/WikiArt Dataset}
 	
 	\bibitem{Lij2012}
@@ -417,8 +414,7 @@ In future work we would like to deal with a task that could be considered relate
 	Neural Networks. 2012
 
 	\bibitem{pytorchguide}
-	Sasank Chilamkurthy.
-	\url{https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html}
+	Sasank Chilamkurthy. \url{https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html}
 	
 	\bibitem{dropout}
 	G. E. Hinton, N. Srivastava, A. Krizhevsky, I. Sutskever and R. R. Salakhutdinov.
