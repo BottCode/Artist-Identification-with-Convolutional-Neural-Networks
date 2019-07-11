@@ -65,7 +65,7 @@ Università di Padova \\
 \section{Introduction}
 Artist identification is the task of recognizing the author of a painting given only an image of it, without any other information about it. It's still nowadays a difficult problem to solve, for the following reasons:
 \begin{itemize}
-	\item there are not many contributions in the state-of-the-art, moreover the majority of them regards style identification and rely on old deep learning approaches;
+	\item there are not many contributions in the state-of-the-art, moreover the majority of them regards style identification and rely on old deep learning approaches. In fact, only \cite{ArtistIdCNN406} is concerns artist identification using CNNs;
 	\item the available datasets are not as large as those used by models which solve more common tasks, such as image classification (e.g. Imagenet \cite{imagenet});
 	\item artist's style could change a lot through his works, or it could be influenced by other painters. Therefore, it is clear how much is complicated to correctly classify a painting. 
 \end{itemize}
@@ -81,14 +81,14 @@ we discuss our approach for solving the problem we have just described. In \ref{
 
 In this section we show some previous works related to ours. In addition to define the references of our experiments, the following should further convince the reader of present-day difficulty in achieving good precision in artist identification.\\
 Recently CNNs have become widespread, because of the good performance and results obtained in tasks regarding visual recognition.
-Previous works not regarding CNNs use some famous approaches of features detection, such as Scale Invariant Feature Transforms (SIFT) and Histograms of oriented gradients (HOG) (\cite{Saleh2015}, \cite{mensink2014}, \cite{lombardi05}, \cite{jou2011}), to extract some particular characteristics of the painting useful for its classification. These works have in common the use of an SVM 1-vs-rest classifier, except \cite{jou2011} which uses both SVM 1-vs-rest and Naïve Bayes classifier. However, \cite{lombardi05} and \cite{jou2011} face up the problem of style recognition, which is different than artist identification, but using similar approaches.\\
+Previous works not regarding CNNs use some famous approaches of features detection, such as Scale Invariant Feature Transforms (SIFT) and Histograms of oriented gradients (HOG) (\cite{Saleh2015}, \cite{mensink2014}, \cite{lombardi05}, \cite{jou2011}), to extract some particular characteristics of the painting useful for its classification. These works have in common the use of an SVM 1-vs-rest classifier, except \cite{jou2011}, which uses both SVM 1-vs-rest and Naïve Bayes classifier, and \cite{lombardi05}, which uses k-nearest neighbors and hierarchical clustering. However, \cite{lombardi05} and \cite{jou2011} face up the problem of style recognition, which is different than artist identification, but using similar approaches.\\
 In addition, some of these perform on small or not so heterogenous datasets, such as \cite{mensink2014} which uses the artworks of a single museum, or \cite{jou2011} which focuses on only 5 artists. Instead, in our work we set our sights on recognizing 23 different artists, with 450 paintings for each of them as our dataset. \\
 In any case, these techniques are known to be not so effective due to the fact that features characterizing an artist's style can be many and difficult to engineer, such as texture, shape, color, tone, variety, proportion, pattern and brush strokes.\\
 
 One of the results achieved in \cite{hong2017} shows an improvement of performance using CNNs up to 13.6 percentage points more than SIFT, HOG or similar.  This work aims to detect artwork that violates copyright terms in television programs, TV series, movies or similar scenarios. They use different techniques to distort the images on their dataset in order to simulate potential situation that it would be appeared on TV programs or photographs or
 movies. This is not suitable for our context because distortion would be harmful for artist identification.\\
 They have experimented 3 different CNNs inspired by AlexNet and VGG, training them from scratch with a weights initialization according to a Gaussian distribution, instead, in our work, we use pre-existing CNNs without modifying their architectures. \cite{hong2017} is one of the few works which does not use SVM as classifier, but 3 fully connected layers with softmax classifier.\\
-\textbf{Other works like \cite{Bar2014} and \cite{razavian2014} use} a CNN to generate features, then use an SVM 1-vs-rest classifier on top of it.
+Other works like \cite{Bar2014} and \cite{razavian2014} use a CNN to generate features, then use an SVM 1-vs-rest classifier on top of it.
 \cite{ArtistIdCNN406} exploit one of the most recent CNNs, i.e. ResNet (\cite{resnet}). It is an ancestor of ResNeXt (\cite{resneXt}), one of the CNNs used in our experiment. In \cite{ArtistIdCNN406} either training from scratch and training through transfer learning are studied,  as in our work.
 \\
 
@@ -243,7 +243,7 @@ In order to evaluate all the models that we study, we have calculated the accura
 
 \subsection{Results}\label{results}
 
-In table \ref{table} we report the overall results obtained with training  from scratch and transfer learning for each CNN, including also the results obtained in \cite{ArtistIdCNN406}, \cite{Saleh2015} and \cite{mensink2014}, \textbf{OTHER}
+In table \ref{table} we report the overall results obtained with training  from scratch and transfer learning for each CNN, including also the results obtained in \cite{ArtistIdCNN406}, \cite{Saleh2015} and \cite{mensink2014}.
 
 The first thing we observe, comparing the CNNs, is that AlexNet's performances are much worse than other CNNs for all experiments, thus we can deduce how network's complexity allows to achieve better results. In fact, GoogLeNet and ResNeXt are successors of AlexNet, so this outcome should not be surprising. 
 In particular, in training from scratch, AlexNet is 20 percentage points worse than others CNNs, while in training with transfer learning this distance is halved. This result shows that transfer learning performs very well in order to achieve quite good accuracy, even with not so complex networks. Indeed, AlexNet has obtained 87\% of top-3 accuracy in the test set.
@@ -267,7 +267,7 @@ In figure \ref{fig:accscratch}, for each CNN trained from scratch,  we report th
 From this fact, we deduced that with a wider dataset and an higher number of epochs, we could obtained better performances. Therefore, we have decided to test once our best network for 30 epochs. We didn't extend this kind of experiment to all networks due to our limited Google Cloud's resources. As we expected, ResNeXt's accuracy trend \textbf{kept increasing} without introducing overfitting, improving both accuracies by 8 percentage points on test set.
 
 In figure \ref{fig:acctransfer}, instead, we see the trends for each CNN trained with transfer learning. In all of them, after few epochs, an increase in the trend's slope is noted. This corresponds to the moment when the network is allowed to update not only the FC-layers' weights, but also those of all layers as previous explained in \ref{ImplDet}, adapting the whole CNN to artist identification task.\\
-Moreover, we can see that GoogLeNet and ResNeXt, aftew roughly 10 epochs, are affected by overfitting. In fact there is an incresing difference between training accuracy and validation accuracy due to the stabilization of the latter, stating that these networks could have been trained for fewer epochs.  However, our results achieved higher accuracies than \cite{ArtistIdCNN406}, \cite{Saleh2015} and \cite{mensink2014}, \textbf{OTHER}
+Moreover, we can see that GoogLeNet and ResNeXt, aftew roughly 10 epochs, are affected by overfitting. In fact there is an incresing difference between training accuracy and validation accuracy due to the stabilization of the latter, stating that these networks could have been trained for fewer epochs.  However, our results achieved higher accuracies than \cite{ArtistIdCNN406}, \cite{Saleh2015} and \cite{mensink2014}.
 
 
 % Please add the following required packages to your document preamble:
