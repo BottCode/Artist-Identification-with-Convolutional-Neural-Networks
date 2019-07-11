@@ -157,10 +157,11 @@ than the main one, during training. The gradient from the main classifier which 
 \subparagraph{Inception module}\mbox{}\\
 The Inception modules were designed to solve the problem of computational expense, as well as overfitting, among other issues. The solution, in short, is to take multiple filter sizes within the CNN, and rather than stacking them sequentially, ordering them to operate on the same level. \\
  The most simplified version of an inception module works by performing a convolution on an input with not one, but three different sizes of filters (1x1, 3x3, 5x5). Also, max pooling is performed. Then, the resulting outputs are concatenated and sent to the next layer.
-A method to reduce the number of computation is dimensionality reduction. This involves convolutions with 1x1 filters before convolutions with bigger filters (figure \ref{fig:incmodule}).
+A method to reduce the number of computation is dimensionality reduction. This involves convolutions with 1x1 filters before convolutions with bigger filters (Figure \ref{fig:incmodule}).
+\newpage
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.7\linewidth]{image/inc_module}
+	\includegraphics[width=0.5\linewidth]{image/inc_module}
 	\caption{Inception module with dimension reduction}
 	\label{fig:incmodule}
 \end{figure}
@@ -176,8 +177,8 @@ A module in this network performs a set of transformations, each on a low-dimens
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.7\linewidth]{image/resnext}
-	\caption{Left: A block of ResNet. Right: A block of ResNeXt with cardinality=32. A layer is shown as (\# in channels, filter size, \# out channels)}
+	\includegraphics[width=0.5\linewidth]{image/resnext}
+	\caption{A block of ResNeXt with cardinality=32. A layer is shown as (\# in channels, filter size, \# out channels)}
 	\label{fig:resnext_block}
 \end{figure}
 
@@ -190,13 +191,14 @@ In our work we use ResNeXt-50 32$\times$4d (Figure \ref{fig:res}), that represen
 	\caption{ResNeXt-50 (32$\times$4)'s architecture}
 	\label{fig:res}
 \end{figure}
+\newpage
 \section{Experiments}\label{experiments}
 
 \subsection{Setup}
 Both the built models and the experiments have been implemented in Pytorch (\cite{pytorch}). The reason why we chose this library is because of the presence of models, pre-trained and not, that we wanted to study.\\
-The training of the models and the experiments were performed on a virtual machine hosted by \textit{Compute Engine}, one of the services provided by Google Cloud Platform (\cite{gcloud}). Its configuration, shown in table \ref{table:specVM}, is a pre-setting provided by the service itself and designed for deep learning applications  (\cite{vmconfig}). The dataset was stored in a \textit{Google Cloud Storage}'s bucket, another service provided by Google Cloud Platform.
+The training of the models and the experiments were performed on a virtual machine hosted by \textit{Compute Engine}, one of the services provided by Google Cloud Platform (\cite{gcloud}). Its configuration, shown in Table \ref{tab:specVM}, is a pre-setting provided by the service itself and designed for deep learning applications  (\cite{vmconfig}). The dataset was stored in a \textit{Google Cloud Storage}'s bucket, another service provided by Google Cloud Platform.
 
-\begin{table}
+\begin{table}[h]
 	\centering
 	\begin{tabular}{|l|l|} 
 		\hline
@@ -211,26 +213,24 @@ The training of the models and the experiments were performed on a virtual machi
 		Availability Zone  & us-west1-b              \\
 		\hline
 	\end{tabular}
-\\
-\caption{VM specifications}
-   	\label{table:specVM}
+	\caption{VM specifications}
+   	\label{tab:specVM}
 \end{table}
 
 \subsection{Implementation Details}\label{ImplDet}
 
 For each CNN, we tested their performance with different learning rate values ($10^{-2}, 10^{-3}, 10^{-4}, 10^{-5}$). We have observed that $10^{-3}$ is the value which allows to converge faster to the best results, thus all experiments we have performed use this learning rate.\\
-In figure \ref{fig:lr} we report ResNeXt's performance based on these different values, where it's clear that the lowest value of learning rate slows down the training phase, instead higher values ($10^{-2}$) bring more instability in the accuracy trend.
+In Figure \ref{fig:lr} we report ResNeXt's performance based on these different values, where it's clear that the lowest value of learning rate slows down the training phase, instead higher values ($10^{-2}$) bring more instability in the accuracy trend.
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.5\textwidth]{graphs/lr_scratch}\hfill
 	\includegraphics[width=.5\textwidth]{graphs/lr_tl}
-	\caption{Top-1 accuracies for ResNeXt's validation set}
+	\caption{Top-1 accuracies for ResNeXt's validation set with different learning rates}
 	\label{fig:lr}
 \end{figure}
 
 \textbf{We chose the Adam's update rule because the experiments using SGD were worse. \textbf{Abbiamo impostato il }learning rate $= 10^{-3}$ mentre per gli altri papametri we used the default ones, i.e. $\beta_{1}  = 0.9$ and $\beta_{2} = 0.999$.  \textbf{MA COSA SONO beta1 e BETA2}}\\
-
 In transfer learning training, we set respectively the number of epochs and batch size to 16 and 32.  For each model chosen, pytorch makes available their final weights  trained on the ImageNet dataset (\cite{imagenet}), which makes transfer learning very easy to implement.\\
 We first start training the network updating the weights only in the FC-layers, but the results obtained were not satisfactory.\\
 With the aim of achieving higher accuracy, as experimented in \cite{ArtistIdCNN406}, we have decided to allow the update of the weights in the whole network when, for 3 consecutive epochs, the validation set's accuracy does not improve by 3 percentage points. When this condition occurs, learning rate is decreased by a factor of 10. This strong decrease is motivated by the hypothesis  that pre-trained weights are already "close" to those we are looking for, so it is good to update them with a smaller step-size.
@@ -241,6 +241,24 @@ We have experimented what in pytorch is called \textit{scheduler}, i.e. every 7 
 
 In order to evaluate all the models that we study, we have calculated the accuracy on training and validation sets for each epochs during training, and the final accuracy on test set using the best weights resulted from training. The accuracy is intended as top-1, i.e.  the fraction of paintings whose artists are identify correctly, and top-3, i.e. the fraction of paintings whose artists are included in the 3 to whom the model has assigned the highest score.
 
+
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+		\hline
+		\multirow{3}{*}{\textbf{Network}}                                & \multicolumn{4}{c|}{\textbf{Training from scratch}}                       & \multicolumn{4}{c|}{\textbf{Training with transfer learning}}             \\ \cline{2-9} 
+		& \multicolumn{2}{c|}{\textbf{Top-1}} & \multicolumn{2}{c|}{\textbf{Top-3}} & \multicolumn{2}{c|}{\textbf{Top-1}} & \multicolumn{2}{c|}{\textbf{Top-3}} \\ \cline{2-9} 
+		& Train acc        & Test acc         & Train acc        & Test acc         & Train acc        & Test acc         & Train acc        & Test acc         \\ \hline
+		AlexNet                                                          & 0.23103          & 0.27439          & 0.46159          & 0.51304          & 0.7134           & 0.68695          & 0.88925          & 0.87439          \\ \hline
+		GoogLeNet                                                        & 0.42669          & 0.46956          & 0.68285          & 0.70628          & 0.87536          & 0.80579          & 0.96787          & 0.92492          \\ \hline
+		ResNeXt-50                                                       & \textbf{0.50531} & \textbf{0.50048} & \textbf{0.74275} & \textbf{0.74782} & \textbf{0.92125} & \textbf{0.82318} & \textbf{0.98695} & \textbf{0.94879} \\ \hline
+		ResNet-18 ref                                                    & 0.516            & 0.511            & 0.737            & 0.710            & 0.907            & 0.777            & 0.973            & 0.898            \\ \hline
+		1-vs-all SVM \cite{Saleh2015}                   & -                & 0.5776           & -                & -                & -                & -                & -                & -                \\ \hline
+		1-vs-all SVM \cite{mensink2014} & -                & 0.591            & -                & -                & -                & -                & -                & -                \\ \hline
+	\end{tabular}
+	\caption{Results of our experiments, compared with some previous works.}
+	\label{tab:results}
+\end{table}
 \subsection{Results}\label{results}
 
 In table \ref{table} we report the overall results obtained with training  from scratch and transfer learning for each CNN, including also the results obtained in \cite{ArtistIdCNN406}, \cite{Saleh2015} and \cite{mensink2014}.
@@ -250,6 +268,13 @@ In particular, in training from scratch, AlexNet is 20 percentage points worse t
 
 For all the networks, we can see how training with transfer learning achieved results with 40 percentage points more than training from scratch. So, we can figure out that CNNs already trained on ImageNet dataset, which is wider than ours,  are a valuable starting point for artist identification\\
 The most performing CNN is ResNeXt trained with transfer learning. Its top-1 accuracy reaches 82\% on test set, while its top-3 accuracy is roughly 94\%. This mean that it can narrow down the artist to three in the vast majority of cases.
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.8\linewidth]{graphs/confusion}
+	\caption{Confusion matrix for top-1 classification on ResNeXt test set}
+	\label{fig:confusion}
+\end{figure}
 
 Figure \ref{fig:confusion} shows the confusion matrix concerning our best network's classification on test set. Each row represents the true artist and each column represents the predicted one. Ideally, we want as many predictions as possible to be concentrated on the diagonal as this means that the network correctly predicted the true artist. The maximum possible value for a cell in the confusion matrix is 45, since there are 45 paintings per artist in the test set.\\
 In general, we can easily see how the majority of artifacts are well-classified thanks to the colours (from yellow to brown) on the diagonal cell, i.e. more than 30 painting for each artist are well classified.
@@ -261,42 +286,13 @@ For the artists whose paintings are often misclassified, we have noticed some co
 Some of them belong to movements such as surrealism, cubism or expressionism, thus their artefacts are not depicting real scenario (\textbf{esempi}), making them harder to classify.
 For example, Pablo Picasso, who founded the cubism movement, is the most misclassified artist (30 correctly classified out of 45).\\
 The second reason leading to misclassification is the similarity  between different artists. The most striking example regards Ilya Repin, in fact, as we can see in Figure \ref{fig:confusion} (9th row, 2nd column), the model has classified Boris Kustodiev as authors of 8 Repin's artworks. This is not so surprising since Repin was the Kustodiev's teacher, influencing significantly his style. \\
-Another reason concerns artists that, during their life, changed their art style significantly, producing very various type of paintings. For example in figure \ref{fig:vangogh} we can see 2 very different Van Gogh's artworks. This complicates furthermore the classification, leading to worse performance (accuracy on Van Gogh is 33 out of 45).
+Another reason concerns artists that, during their life, changed their art style significantly, producing very various type of paintings. For example in Figure \ref{fig:vangogh} we can see 2 very different Van Gogh's artworks. This complicates furthermore the classification, leading to worse performance (accuracy on Van Gogh is 33 out of 45).
 
-In figure \ref{fig:accscratch}, for each CNN trained from scratch,  we report the top-1 accuracy trends on training and validation set. What we can notice is that both trends are very close each other, proving a very low level of overfitting.
+In Figure \ref{fig:accscratch}, for each CNN trained from scratch,  we report the top-1 accuracy trends on training and validation set. What we can notice is that both trends are very close each other, proving a very low level of overfitting.
 From this fact, we deduced that with a wider dataset and an higher number of epochs, we could obtained better performances. Therefore, we have decided to test once our best network for 30 epochs. We didn't extend this kind of experiment to all networks due to our limited Google Cloud's resources. As we expected, ResNeXt's accuracy trend \textbf{kept increasing} without introducing overfitting, improving both accuracies by 8 percentage points on test set.
 
 In figure \ref{fig:acctransfer}, instead, we see the trends for each CNN trained with transfer learning. In all of them, after few epochs, an increase in the trend's slope is noted. This corresponds to the moment when the network is allowed to update not only the FC-layers' weights, but also those of all layers as previous explained in \ref{ImplDet}, adapting the whole CNN to artist identification task.\\
 Moreover, we can see that GoogLeNet and ResNeXt, aftew roughly 10 epochs, are affected by overfitting. In fact there is an incresing difference between training accuracy and validation accuracy due to the stabilization of the latter, stating that these networks could have been trained for fewer epochs.  However, our results achieved higher accuracies than \cite{ArtistIdCNN406}, \cite{Saleh2015} and \cite{mensink2014}.
-
-
-% Please add the following required packages to your document preamble:
-
-\begin{table}[]
-	\begin{tabular}{|c|c|c|c|c|}
-		\hline
-		\multicolumn{5}{|c|}{\textbf{Training from scratch}}                                                          \\ \hline
-		\multirow{2}{*}{\textbf{Network}} & \multicolumn{2}{c|}{\textbf{Top-1}} & \multicolumn{2}{c|}{\textbf{Top-3}} \\ \cline{2-5} 
-		& Train acc        & Test acc         & Train acc        & Test acc         \\ \hline
-		AlexNet                           & 0.23103          & 0.27439          & 0.46159          & 0.51304          \\ \hline
-		GoogLeNet                         & 0.42669          & 0.46956          & 0.68285          & 0.70628          \\ \hline
-		ResNeXt-50                        & \textbf{0.50531} & \textbf{0.50048} & \textbf{0.74275} & \textbf{0.74782} \\ \hline
-		ResNet-18 \cite{ArtistIdCNN406}                    & 0.516            & 0.511            & 0.737            & 0,710            \\ \hline
-		1-vs-all SVM \cite{Saleh2015}                    & -            & 0.5776            &    -         & -            \\ \hline
-		1-vs-all SVM (on 374 artist) \cite{mensink2014}                  & -            & 0.591            &    -         & -            \\ \hline
-	\end{tabular}
-	\begin{tabular}{|c|c|c|c|c|}
-		\hline
-		\multicolumn{5}{|c|}{\textbf{Training with transfer learning}}                                                           \\ \hline
-		\multirow{2}{*}{\textbf{Network}} & \multicolumn{2}{c|}{\textbf{Top-1}}  & \multicolumn{2}{c|}{\textbf{Top-3}} \\ \cline{2-5} 
-		& Train acc        & Test acc          & Train acc         & Test acc        \\ \hline
-		AlexNet                           & 0.7134           & 0.68695           & 0.88925           & 0.87439         \\ \hline
-		GoogLeNet                         & 0.87536          & 0.80579           & 0.96787           & 0.92492         \\ \hline
-		ResNeXt-50                        & \textbf{0.92125} & \textbf{0.82318} & \textbf{0.98695}  & \textbf{0.94879} \\ \hline
-		ResNet-18 \cite{ArtistIdCNN406}                    & 0.907            & 0.777             & 0.973             & 0.898           \\ \hline
-	\end{tabular}
-	\label{table}
-\end{table}
 
 
 \begin{figure}[htp]
@@ -306,7 +302,7 @@ Moreover, we can see that GoogLeNet and ResNeXt, aftew roughly 10 epochs, are af
 	\includegraphics[width=.33\textwidth]{graphs/google_scratch}\hfill
 	\includegraphics[width=.33\textwidth]{graphs/res_scratch}
 	
-	\caption{default}
+	\caption{Top-1 accuracy for CNNs trained from scratch}
 	\label{fig:accscratch}
 	
 \end{figure}
@@ -318,26 +314,20 @@ Moreover, we can see that GoogLeNet and ResNeXt, aftew roughly 10 epochs, are af
 	\includegraphics[width=.33\textwidth]{graphs/google_training}\hfill
 	\includegraphics[width=.33\textwidth]{graphs/res_training}
 	
-	\caption{default}
+	\caption{Top-1 accuracy for CNNs trained with transfer learning}
 	\label{fig:acctransfer}
 	
-\end{figure}
-
-\begin{figure}
-	\centering
-	\includegraphics[width=0.8\linewidth]{graphs/confusion}
-	\caption{Confusion matrix for top-1 classification on ResNeXt test set}
-	\label{fig:confusion}
 \end{figure}
 
 
 \begin{figure}[htp]
 	
 	\centering
-	\includegraphics[width=.5\textwidth]{image/1280px-Van_Gogh_-_Starry_Night_-_Google_Art_Project}\hfill
-	\includegraphics[height=.5\textwidth]{image/vincent-van-gogh_seated-man-with-a-beard-1886-1}
+	$\vcenter{\hbox{	\includegraphics[width=.4\textwidth]{image/1280px-Van_Gogh_-_Starry_Night_-_Google_Art_Project}}}$
+	\hspace*{.2in}
+	$\vcenter{\hbox{\includegraphics[height=.4\textwidth]{image/vincent-van-gogh_seated-man-with-a-beard-1886-1}}}$
 	
-	\caption{2 different Van Gogh's artoworks}
+	\caption{Two different Van Gogh's artworks}
 	\label{fig:vangogh}
 	
 \end{figure}
