@@ -54,7 +54,7 @@ Università di Padova \\
 	\textit{In this essay we present our work for the project of the Cognitive Services course.
 	The problem we face is the artist identification, that is being able to recognize the author of a painting, given an image of it. Our dataset consists of about 10.000 paintings of 23 different artists.
 	In order to resolve this task, we have exploited some famous Convolutional Neural Networks (CNNs), i.e. AlexNet, GoogLeNet and ResNeXt, that come with \textit{Pytorch} library. Those networks have been trained according to two distinct approaches: training them from scratch or exploiting pre-trained models using transfer learning technique. We used a virtual machine (VM) hosted by \textit{Google Cloud Platform} to perform our experiments.\\
-	\textbf{What we have achieved is a set of results which are in line with the state-of-the-art, confirming that CNNs are suitable to solve this type of task.}}
+	What we have achieved is a set of results which are in line or even better with the state-of-the-art, confirming that CNNs are suitable to solve this type of task.}
 \end{abstract}
 
 
@@ -67,10 +67,10 @@ Artist identification is the task of recognizing the author of a painting given 
 \begin{itemize}
 	\item there are not many contributions in the state-of-the-art, moreover the majority of them regards style identification and rely on old deep learning approaches;
 	\item the available datasets are not as large as those used by models which solve more common tasks, such as image classification (e.g. Imagenet \cite{imagenet});
-	\item artist's style could change a lot through his works, or it could be influenced by other painters. Therefore it's clear how much is complicated to \textbf{classify correctly} a painting. 
+	\item artist's style could change a lot through his works, or it could be influenced by other painters. Therefore, it is clear how much is complicated to correctly classify a painting. 
 \end{itemize}
 Usually this task is done by human experts because of its difficulty, so our contribution can help to automatize the catalogation of artworks, which is more and more important due to the increasing number of  digital archives. In addition, our work could be useful in art forgeries detection.\\
-Our approach involves 3 different CNNs, AlexNet (\cite{alexnet}), GoogLeNet (\cite{googlenet}) and ResNeXt (\cite{resneXt}), trained from scratch and with transfer learning in order to compare these opposite techniques. Our experiments \textbf{produced} a top-1 accuracy of 82\%  and a top-3 accuracy of 92\% as best result.\\
+Our approach involves 3 different CNNs, AlexNet (\cite{alexnet}), GoogLeNet (\cite{googlenet}) and ResNeXt (\cite{resneXt}), trained from scratch and with transfer learning in order to compare these opposite techniques. Our experiments yielded a top-1 accuracy of 82\%  and a top-3 accuracy of 94\% as best result.\\
 
 
 The rest of the essay is structured as follows: in section \ref{relwor} we discuss  similarities and differences between previous works and ours. In section \ref{dataset} we explain the dataset we have used, how it was created and which preprocessing and data augmentation techniques we have exploited. In section\ref{method}
@@ -82,13 +82,13 @@ we discuss our approach for solving the problem we have just described. In \ref{
 In this section we show some previous works related to ours. In addition to define the references of our experiments, the following should further convince the reader of present-day difficulty in achieving good precision in artist identification.\\
 Recently CNNs have become widespread, because of the good performance and results obtained in tasks regarding visual recognition.
 Previous works not regarding CNNs use some famous approaches of features detection, such as Scale Invariant Feature Transforms (SIFT) and Histograms of oriented gradients (HOG) (\cite{Saleh2015}, \cite{mensink2014}, \cite{lombardi05}, \cite{jou2011}), to extract some particular characteristics of the painting useful for its classification. These works have in common the use of an SVM 1-vs-rest classifier, except \cite{jou2011} which uses both SVM 1-vs-rest and Naïve Bayes classifier. However, \cite{lombardi05} and \cite{jou2011} face up the problem of style recognition, which is different than artist identification, but using similar approaches.\\
-In addition, some of these perform on small or not so heterogenous datasets, such as \cite{mensink2014} which uses the artwork of a single museum, or \cite{jou2011} which focuses on only 5 artists. Instead, in our work we set our sights on recognizing 23 different artists, with 450 paintings for each of them as our dataset. \\
+In addition, some of these perform on small or not so heterogenous datasets, such as \cite{mensink2014} which uses the artworks of a single museum, or \cite{jou2011} which focuses on only 5 artists. Instead, in our work we set our sights on recognizing 23 different artists, with 450 paintings for each of them as our dataset. \\
 In any case, these techniques are known to be not so effective due to the fact that features characterizing an artist's style can be many and difficult to engineer, such as texture, shape, color, tone, variety, proportion, pattern and brush strokes.\\
 
 One of the results achieved in \cite{hong2017} shows an improvement of performance using CNNs up to 13.6 percentage points more than SIFT, HOG or similar.  This work aims to detect artwork that violates copyright terms in television programs, TV series, movies or similar scenarios. They use different techniques to distort the images on their dataset in order to simulate potential situation that it would be appeared on TV programs or photographs or
 movies. This is not suitable for our context because distortion would be harmful for artist identification.\\
 They have experimented 3 different CNNs inspired by AlexNet and VGG, training them from scratch with a weights initialization according to a Gaussian distribution, instead, in our work, we use pre-existing CNNs without modifying their architectures. \cite{hong2017} is one of the few works which does not use SVM as classifier, but 3 fully connected layers with softmax classifier.\\
-Other works like \cite{Bar2014} and \cite{razavian2014} use a CNN to generate features, then use an SVM 1-vs-rest classifier on top of it.
+\textbf{Other works like \cite{Bar2014} and \cite{razavian2014} use} a CNN to generate features, then use an SVM 1-vs-rest classifier on top of it.
 \cite{ArtistIdCNN406} exploit one of the most recent CNNs, i.e. ResNet (\cite{resnet}). It is an ancestor of ResNeXt (\cite{resneXt}), one of the CNNs used in our experiment. In \cite{ArtistIdCNN406} either training from scratch and training through transfer learning are studied,  as in our work.
 \\
 
@@ -239,17 +239,11 @@ In training from scratch, the number of epochs is set to 20, while the batch siz
 Initialisation of the weights follows a uniform distribution in $[-x, x]$ where $x=1/\sqrt n$ and $n$ is the number of inputs to a given neuron (\textbf{STA COSA È DA VERIFICARE})\\
 We have experimented what in pytorch is called \textit{scheduler}, i.e. every 7 epochs the learning rate is decreased by a factor of 10 . This strategy, however, has not led to improvements and in fact the results exposed have been obtained without the use of this technique.
 
-\subsection{Evaluation metrics}
 In order to evaluate all the models that we study, we have calculated the accuracy on training and validation sets for each epochs during training, and the final accuracy on test set using the best weights resulted from training. The accuracy is intended as top-1, i.e.  the fraction of paintings whose artists are identify correctly, and top-3, i.e. the fraction of paintings whose artists are included in the 3 to whom the model has assigned the highest score.
-
-Finally, we have compared our results with those in \textbf{CIT??}, which is/are the most related works with ours. 
-The most significant results are reported in \ref{results}.
 
 \subsection{Results}\label{results}
 
-\textbf{RESNET SI SATURA PRIMA DI RESNEXT}
-
-In table \ref{table} we report the overall results obtained with training  from scratch and transfer learning for each CNN, including also the results obtained in \cite{ArtistIdCNN406} and \textbf{altri.}...
+In table \ref{table} we report the overall results obtained with training  from scratch and transfer learning for each CNN, including also the results obtained in \cite{ArtistIdCNN406}, \cite{Saleh2015} and \cite{mensink2014}, \textbf{OTHER}
 
 The first thing we observe, comparing the CNNs, is that AlexNet's performances are much worse than other CNNs for all experiments, thus we can deduce how network's complexity allows to achieve better results. In fact, GoogLeNet and ResNeXt are successors of AlexNet, so this outcome should not be surprising. 
 In particular, in training from scratch, AlexNet is 20 percentage points worse than others CNNs, while in training with transfer learning this distance is halved. This result shows that transfer learning performs very well in order to achieve quite good accuracy, even with not so complex networks. Indeed, AlexNet has obtained 87\% of top-3 accuracy in the test set.
@@ -261,24 +255,19 @@ Figure \ref{fig:confusion} shows the confusion matrix concerning our best networ
 In general, we can easily see how the majority of artifacts are well-classified thanks to the colours (from yellow to brown) on the diagonal cell, i.e. more than 30 painting for each artist are well classified.
 
 In particular, the artits better classified (44 out of 45) are Eugene Bodin, Ivan Aivazovsky and Raphael Kirchner. In fact, even though these artists may belong to differents artistic movements and styles, their painting tends to represent the world very close to reality (\textbf{figura ?? show some example}).\\
-For example, Ivan Aivazovsky produced many portraits and landscapes, over half of all of his paintings are realistic depictions of coastal scenes and seascapes. \\
-The manner of painting real scenario or objects makes artist classification very similar to image classification. Indeed, form our results we note that artists with this characteristic obtained an higher accuracy.
+For example, Ivan Aivazovsky produced many portraits and landscapes, over half of all of his paintings are realistic depictions of coastal scenes and seascapes. The manner of painting real scenario or objects makes artist classification very similar to image classification. Indeed, from our results we note that artists with this characteristic obtained an higher accuracy.
 
-For the artists whose paints are often misclassified, we have noticed some common traits which follows.\\
-Some of them belong to movements such as surrealism, cubism or expressionism, thus their artifacts are not depicting real scenario (\textbf{esempi}), making them harder to classify.
-For example, Pablo Picasso, who founded the cubism movement, is the most misclassified artist (30 out of 45).
-  
-The second reason leading to misclassification is the similarity  between different artists.\\
-The most striking example regards Ilya Repin, in fact the model has classified Boris Kustodiev as authors of 8 Repin's artworks. That's not so surprising since Repin was the Kustodiev's teacher, influencing significantly his style. (\textbf{example}).
+For the artists whose paintings are often misclassified, we have noticed some common traits which follows.\\
+Some of them belong to movements such as surrealism, cubism or expressionism, thus their artefacts are not depicting real scenario (\textbf{esempi}), making them harder to classify.
+For example, Pablo Picasso, who founded the cubism movement, is the most misclassified artist (30 correctly classified out of 45).\\
+The second reason leading to misclassification is the similarity  between different artists. The most striking example regards Ilya Repin, in fact, as we can see in Figure \ref{fig:confusion} (9th row, 2nd column), the model has classified Boris Kustodiev as authors of 8 Repin's artworks. This is not so surprising since Repin was the Kustodiev's teacher, influencing significantly his style. \\
+Another reason concerns artists that, during their life, changed their art style significantly, producing very various type of paintings. For example in figure \ref{fig:vangogh} we can see 2 very different Van Gogh's artworks. This complicates furthermore the classification, leading to worse performance (accuracy on Van Gogh is 33 out of 45).
 
-Another reason concerning artists whose produced paints with different style between them, as we can see in figure \textbf{REF} where Van Gogh's artworks are reported. This complicates furthermore the classification, leading to worse performance (accuracy on Van Gogh is 33 out of 45).
+In figure \ref{fig:accscratch}, for each CNN trained from scratch,  we report the top-1 accuracy trends on training and validation set. What we can notice is that both trends are very close each other, proving a very low level of overfitting.
+From this fact, we deduced that with a wider dataset and an higher number of epochs, we could obtained better performances. Therefore, we have decided to test once our best network for 30 epochs. We didn't extend this kind of experiment to all networks due to our limited Google Cloud's resources. As we expected, ResNeXt's accuracy trend \textbf{kept increasing} without introducing overfitting, improving both accuracies by 8 percentage points on test set.
 
-In figure \ref{fig:accscratch}, for each CNN trained from scratch,  we report the top-1 accuracy trends on training and validation set. What we see is that both trends are very close each other, which proves a very low level of overfitting.
-From this fact, we deduce that with a wider dataset and an higher number of epochs, we could be obtained better performances. For this reason, we have decided to test once our best network for 30 epochs. We didn't extend this kind of experiment to all networks due to our Google Cloud's limit resources. As we expected, ResNeXt's accuracy trend \textbf{kept increasing } without introducing overfitting, reaching 59\% top-1 and 81\% top-3 accuracy on test set.
-
-In figure \ref{fig:acctransfer}, instead, we see the trends for each CNN trained with transfer learning. In all of them, after few epochs, an increase in the trend's slope is noted. This corresponds to the moment where to the network is able to update not only the FC-layers' weights, but also for them of the whole network as previous explained in \ref{ImplDet}. So we can deduce that pre-trained CNNs are trying to adapt to artist identification task.
-
-Moreover, we can see that GoogLeNet and ResNeXt, aftew roughly 10 epochs, are affected by overfitting. In fact there's an incresing difference between test accuracy and validation accuracy, stating that fewer epochs could have been needed. \textbf{Comunque sia i risultati ottenuti sono migliori di quelli dei related works.}
+In figure \ref{fig:acctransfer}, instead, we see the trends for each CNN trained with transfer learning. In all of them, after few epochs, an increase in the trend's slope is noted. This corresponds to the moment when the network is allowed to update not only the FC-layers' weights, but also those of all layers as previous explained in \ref{ImplDet}, adapting the whole CNN to artist identification task.\\
+Moreover, we can see that GoogLeNet and ResNeXt, aftew roughly 10 epochs, are affected by overfitting. In fact there is an incresing difference between training accuracy and validation accuracy due to the stabilization of the latter, stating that these networks could have been trained for fewer epochs.  However, our results achieved higher accuracies than \cite{ArtistIdCNN406}, \cite{Saleh2015} and \cite{mensink2014}, \textbf{OTHER}
 
 
 % Please add the following required packages to your document preamble:
@@ -293,6 +282,8 @@ Moreover, we can see that GoogLeNet and ResNeXt, aftew roughly 10 epochs, are af
 		GoogLeNet                         & 0.42669          & 0.46956          & 0.68285          & 0.70628          \\ \hline
 		ResNeXt-50                        & \textbf{0.50531} & \textbf{0.50048} & \textbf{0.74275} & \textbf{0.74782} \\ \hline
 		ResNet-18 \cite{ArtistIdCNN406}                    & 0.516            & 0.511            & 0.737            & 0,710            \\ \hline
+		1-vs-all SVM \cite{Saleh2015}                    & -            & 0.5776            &    -         & -            \\ \hline
+		1-vs-all SVM (on 374 artist) \cite{mensink2014}                  & -            & 0.591            &    -         & -            \\ \hline
 	\end{tabular}
 	\begin{tabular}{|c|c|c|c|c|}
 		\hline
@@ -346,16 +337,16 @@ Moreover, we can see that GoogLeNet and ResNeXt, aftew roughly 10 epochs, are af
 	\includegraphics[width=.5\textwidth]{image/1280px-Van_Gogh_-_Starry_Night_-_Google_Art_Project}\hfill
 	\includegraphics[height=.5\textwidth]{image/vincent-van-gogh_seated-man-with-a-beard-1886-1}
 	
-	\caption{default}
+	\caption{2 different Van Gogh's artoworks}
 	\label{fig:vangogh}
 	
 \end{figure}
 
 \section{Conclusions and future works}\label{conclusions}
-In this essay we present the methods and approaches we have exploited to deal with artist identification. Once again we mark that it's a complex task, without lot of previous works. 
-In our work we were able to reach a top-1 final accuracy of 82\% using ResNeXt with transfer learning, pre-trained on ImageNet, outperforming traditional feature-based approaches by a significant margin\textbf{ I REALTED WORK SU QUESTO TASK O SIMILI. FORSE DA AGGIUNGERE RESNEXT FROM SCRATCH.}. From these results we think that a larger dataset, both for number of paintings and artists, would allow a significantly increment in accuracy, particularly in training from scratch.
+In this essay we present the methods and approaches we have exploited to deal with artist identification. Once again we mark that it's a complex task, without many previous works. 
+In our work we were able to reach a top-1 final accuracy of 82\% using ResNeXt with transfer learning, pre-trained on ImageNet, outperforming traditional feature-based approaches by a significant margin, claiming that learning features exploiting the latest CNNs is more performing than hand-crafting them. With the aim to improve our work we think that a larger dataset, both in number of paintings and artists, would allow a significantly increment in accuracy, particularly in training from scratch. 
 
-In future work we would like to deal with a task that could be considered related to this, namely the recognition of forgeries in art, starting from our work. Our belief is that the representation of style and content crated by our networks would be a good starting point to create a system able to assign a value of authenticity to a painting, because we think that, though is possible to replicate precisely an artifact, the style of an artist is somehow unique and possibly captured by a CNN.
+In future work, we would like to deal with a task that could be considered related to this, namely the recognition of forgeries in art. Our belief is that the representation of style and content learned by our networks would be a good starting point to create a system able to assign a value of authenticity to a painting, because we think that, though is possible to replicate precisely an artifact, the style of an artist is somehow unique and possibly captured by a CNN.
 
 %%% Comment out this section when you \bibliography{references} is enabled.
 \begin{thebibliography}{1}
@@ -396,6 +387,7 @@ In future work we would like to deal with a task that could be considered relate
 	\bibitem{jou2011}
 	J. Jou and S. Agrawal. Artist identification for renaissance
 	paintings, 2011.
+	
 	\bibitem{razavian2014}
 	A. H. S. J. C. S. Sharif Razavian, A. Cnn features off-theshelf: An astounding baseline for recognition, 2014.
 	
