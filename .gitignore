@@ -4,6 +4,7 @@
 
 ### LaTeX ###
 ## Core latex/pdflatex auxiliary files:
+*.pdf
 *.aux
 *.lof
 *.log
@@ -271,3 +272,5 @@ TSWLatexianTemp*
 *.glstex
 
 # End of https://www.gitignore.io/api/latex
+
+image/*
