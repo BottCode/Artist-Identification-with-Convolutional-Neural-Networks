@@ -6,9 +6,9 @@
 #### Cognitive Services Course
 ##### A.A. 2018-19
 ##### Authors
-[Mattia Bottaro] (https://github.com/BottCode), [Mauro Carlin] (https://github.com/Mou95)
+[Mattia Bottaro](https://github.com/BottCode), [Mauro Carlin](https://github.com/Mou95)
 
-####Abstract
+###Abstract
 
 > In this essay we present our work for the project of the Cognitive Services course.
 	The problem we face is the artist identification, that is the ability to recognize the author of a painting, given an image of it. Our dataset consists of about 10.000 paintings by 23 different artists.
